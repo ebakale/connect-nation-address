@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck,
   AlertCircle, User, Home, Settings, Users, Bell, Package, Truck,
-  ArrowRight, Info, Plus, Building2, Shield
+  ArrowRight, Info, Plus, Building2, Shield, ChevronRight
 } from "lucide-react";
 
 // Hooks and Components
@@ -16,7 +16,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { usePerson, useCitizenAddresses } from "@/hooks/useCAR";
 import { useTranslation } from 'react-i18next';
 
-// Components from unified dashboard (maintaining these for duplicates)
+// Components
 import AddressSearch from "@/components/AddressSearch";
 import AddressMapViewer from "@/components/AddressMapViewer";
 import { AddressRequestForm } from "@/components/AddressRequestForm";
@@ -25,9 +25,9 @@ import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import Footer from '@/components/Footer';
-import { OfflineIndicator } from '@/components/OfflineIndicator';
+import MobileHeader from '@/components/MobileHeader';
 
-// CAR components for personal address management
+// CAR components
 import { UnifiedAddressRequestFlow } from "@/components/UnifiedAddressRequestFlow";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
@@ -37,14 +37,12 @@ import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
 import { PickupRequestForm, DeliveryPreferencesForm } from "@/components/postal";
 import { MapErrorBoundary } from "@/components/ErrorBoundary";
 import { CitizenBusinessesTab } from "@/components/citizen/CitizenBusinessesTab";
+import CitizenBottomNav, { type CitizenSection } from "@/components/citizen/CitizenBottomNav";
 
 interface SearchResult {
   uac: string;
   readable: string;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
+  coordinates: { lat: number; lng: number };
   type: string;
   verified: boolean;
 }
@@ -54,18 +52,18 @@ const CitizenPortalUnified = () => {
   const { role, loading: roleLoading } = useUserRole();
   const { t } = useTranslation();
   
-  // CAR-specific hooks and state (only when authenticated)
   const { person } = usePerson();
   const { 
-    primaryAddress, 
-    secondaryAddresses, 
-    loading: carLoading,
-    refetch: fetchAddresses 
+    primaryAddress, secondaryAddresses, 
+    loading: carLoading, refetch: fetchAddresses 
   } = useCitizenAddresses();
 
+  // Navigation state
+  const [activeSection, setActiveSection] = useState<CitizenSection>('home');
+  const [homeSubTab, setHomeSubTab] = useState('addresses');
+  const [servicesSubTab, setServicesSubTab] = useState('requests');
+  
   // UI State
-  const [activeTab, setActiveTab] = useState('public');
-  const [searchOpen, setSearchOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<SearchResult | null>(null);
   const [showMapView, setShowMapView] = useState(false);
   const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
@@ -75,18 +73,17 @@ const CitizenPortalUnified = () => {
   const [secondaryAddressFormOpen, setSecondaryAddressFormOpen] = useState(false);
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
-  const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState<string>('');
+  const [selectedAddressForPrefs, setSelectedAddressForPrefs] = useState('');
 
-  // Set default tab to 'addresses' for authenticated users on initial load only
+  // Default to home for authenticated users
   useEffect(() => {
     if (isAuthenticated) {
-      setActiveTab('addresses');
+      setActiveSection('home');
+    } else {
+      setActiveSection('search');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
-
-  // CAR data is automatically fetched by the useCitizenAddresses hook
-  // No need for a manual refetch here - it caused infinite loops
 
   if (roleLoading || carLoading) {
     return (
@@ -99,18 +96,22 @@ const CitizenPortalUnified = () => {
     );
   }
 
-  // If showing map view for selected address
+  // Map view for selected address
   if (showMapView && selectedAddress) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
-        <div className="container mx-auto px-4 py-8">
+        <MobileHeader
+          title={selectedAddress.readable}
+          onBack={() => { setShowMapView(false); setSelectedAddress(null); }}
+          isAuthenticated={isAuthenticated}
+          userName={user?.profile?.full_name || user?.email?.split('@')[0]}
+          onSignOut={signOut}
+        />
+        <div className="p-4">
           <MapErrorBoundary>
             <AddressMapViewer
               address={selectedAddress}
-              onBack={() => {
-                setShowMapView(false);
-                setSelectedAddress(null);
-              }}
+              onBack={() => { setShowMapView(false); setSelectedAddress(null); }}
             />
           </MapErrorBoundary>
         </div>
@@ -118,677 +119,535 @@ const CitizenPortalUnified = () => {
     );
   }
 
+  const userName = user?.profile?.full_name || user?.email?.split('@')[0] || 'User';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
-      {/* Government-style Header */}
-      <header className="gov-header-light sticky top-safe z-40">
-        <div className="flex justify-between items-center h-14 px-4 sm:px-6">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
-                <img 
-                  src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
-                  alt="BIAKAM Logo" 
-                  className="h-6 w-auto" 
-                />
-              </div>
-              <div className="min-w-0 hidden sm:block">
-                <h1 className="text-base font-semibold text-foreground">ConEG</h1>
-                <p className="text-xs text-muted-foreground">{t('address:citizenPortal')}</p>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5 flex flex-col">
+      {/* Compact Header */}
+      <MobileHeader
+        title="ConEG"
+        subtitle={t('address:citizenPortal')}
+        isAuthenticated={isAuthenticated}
+        userName={userName}
+        onSignOut={signOut}
+        onSignIn={() => window.location.href = '/auth'}
+      />
 
-          <div className="flex items-center gap-3 shrink-0">
-            <OfflineIndicator />
-            <Badge variant="success" className="hidden md:flex">
-              <Shield className="h-3 w-3 mr-1" />
-              Secure
-            </Badge>
-            {isAuthenticated ? (
-              <>
-                <div className="text-right hidden sm:block min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate max-w-[150px]">
-                    {user?.profile?.full_name || user?.email?.split('@')[0] || 'User'}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Citizen</p>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={signOut}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </>
-            ) : (
-              <Button onClick={() => window.location.href = '/auth'} size="sm" className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                {t('auth:login')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      {/* Main content — scrollable, with bottom padding for nav */}
+      <main className="flex-1 overflow-y-auto pb-20">
+        <div className="px-4 py-4 sm:px-6 max-w-2xl mx-auto space-y-4">
 
-      <div className="container mx-auto px-4 py-6">
-
-        {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
-            <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-3 lg:grid-cols-4 h-auto p-1 gap-1">
-              <TabsTrigger value="public" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                <Search className="h-4 w-4 shrink-0" />
-                <span>Search</span>
-              </TabsTrigger>
-              <TabsTrigger value="requests" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                <FileText className="h-4 w-4 shrink-0" />
-                <span>Requests</span>
-              </TabsTrigger>
-              {isAuthenticated && (
-                <>
-                  <TabsTrigger value="addresses" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Home className="h-4 w-4 shrink-0" />
-                    <span>My Addresses</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="household" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Users className="h-4 w-4 shrink-0" />
-                    <span>Household</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="saved" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <MapPin className="h-4 w-4 shrink-0" />
-                    <span>Saved</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="verification" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <FileCheck className="h-4 w-4 shrink-0" />
-                    <span>Verification</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="deliveries" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Package className="h-4 w-4 shrink-0" />
-                    <span>Deliveries</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="privacy" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Settings className="h-4 w-4 shrink-0" />
-                    <span>Privacy</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="notifications" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Bell className="h-4 w-4 shrink-0" />
-                    <span>Alerts</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="businesses" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Building2 className="h-4 w-4 shrink-0" />
-                    <span>{t('business:dashboard.myBusinesses')}</span>
-                  </TabsTrigger>
-                </>
-              )}
-              <TabsTrigger value="emergency" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap text-destructive data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground">
-                <Phone className="h-4 w-4 shrink-0" />
-                <span>Emergency</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
-
-          {/* Public Search Tab */}
-          <TabsContent value="public" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="h-5 w-5 text-primary" />
-                  {t('address:searchAddresses')}
-                </CardTitle>
-                <CardDescription>{t('address:findVerifiedAddresses')}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <AddressSearch
-                  onSelectAddress={(address) => {
-                    setSelectedAddress(address);
-                    setShowMapView(true);
-                  }}
-                  onRegisterAddress={() => {
-                    if (isAuthenticated) {
-                      setAddressFlowOpen(true);
-                    } else {
-                      window.location.href = '/auth';
-                    }
-                  }}
-                />
-              </CardContent>
-            </Card>
-
-            {!isAuthenticated && (
-              <Card className="border-primary/20 bg-primary/5">
-                <CardHeader>
+          {/* ============ SEARCH SECTION ============ */}
+          {activeSection === 'search' && (
+            <>
+              <Card>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <User className="h-5 w-5 text-primary" />
-                    {t('auth:loginRequired')}
+                    <Search className="h-4 w-4 text-primary" />
+                    {t('address:searchAddresses')}
                   </CardTitle>
+                  <CardDescription className="text-xs">{t('address:findVerifiedAddresses')}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground mb-4 text-sm">
-                    Sign in to manage your personal address, submit registration requests, and track verification status.
-                  </p>
-                  <Button onClick={() => window.location.href = '/auth'} className="w-full sm:w-auto">
-                    <User className="h-4 w-4 mr-2" />
-                    {t('auth:login')}
-                    <ArrowRight className="h-4 w-4 ml-2" />
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
-          </TabsContent>
-
-          {/* Requests Tab */}
-          <TabsContent value="requests" className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-sm">
-                    <FileText className="h-4 w-4 text-primary" />
-                    {t('dashboard:submitRequest')}
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    {t('dashboard:submitRequestDescription')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <Button 
-                    className="w-full" 
-                    onClick={() => setSubmitRequestOpen(true)}
-                    disabled={!isAuthenticated}
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    {t('dashboard:newRequest')}
-                  </Button>
+                  <AddressSearch
+                    onSelectAddress={(address) => { setSelectedAddress(address); setShowMapView(true); }}
+                    onRegisterAddress={() => {
+                      if (isAuthenticated) { setAddressFlowOpen(true); }
+                      else { window.location.href = '/auth'; }
+                    }}
+                  />
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-primary" />
-                    {t('dashboard:requestStatus')}
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    {t('dashboard:requestStatusDescription')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <Button 
-                    className="w-full" 
-                    onClick={() => setStatusOpen(true)}
-                    disabled={!isAuthenticated}
-                  >
-                    <Clock className="mr-2 h-4 w-4" />
-                    {t('dashboard:checkStatus')}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* My Addresses Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="addresses" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Primary Address */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Home className="h-5 w-5 text-primary" />
-                      Primary Address
-                    </CardTitle>
-                    <CardDescription>
-                      Your main residence address from the Citizen Address Repository
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {primaryAddress ? (
-                      <div className="space-y-4">
-                        {primaryAddress.street && (
-                          <div className="bg-muted/30 p-3 rounded-lg">
-                            <div className="space-y-1">
-                              <div className="font-medium text-sm flex items-center gap-1.5">
-                                <MapPin className="h-3.5 w-3.5 text-primary" /> Address Location
-                              </div>
-                              <div className="text-sm">
-                                <div>{primaryAddress.street}</div>
-                                {primaryAddress.building && <div>{primaryAddress.building}</div>}
-                                <div>{primaryAddress.city}, {primaryAddress.region}</div>
-                                <div>{primaryAddress.country}</div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm">UAC</span>
-                            <Badge variant="outline" className="font-mono text-xs">{primaryAddress.uac}</Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm">Type</span>
-                            <Badge variant="secondary">{primaryAddress.address_kind}</Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm">Status</span>
-                            <Badge variant={primaryAddress.status === 'CONFIRMED' ? 'default' : 'destructive'}>
-                              {primaryAddress.status}
-                            </Badge>
-                          </div>
-                          {primaryAddress.nar_verified !== undefined && (
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-sm">NAR Verified</span>
-                              <Badge variant={primaryAddress.nar_verified ? 'default' : 'destructive'}>
-                                {primaryAddress.nar_verified ? 'Yes' : 'No'}
-                              </Badge>
-                            </div>
-                          )}
-                        </div>
-                        <div className="pt-2 border-t space-y-1 text-sm text-muted-foreground">
-                          <div><span className="font-medium text-foreground">Effective:</span> {primaryAddress.effective_from} – {primaryAddress.effective_to || 'ongoing'}</div>
-                          {primaryAddress.address_description && (
-                            <div><span className="font-medium text-foreground">Notes:</span> {primaryAddress.address_description}</div>
-                          )}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        {/* Informative empty state explaining the two-step process */}
-                        <div className="rounded-lg border border-dashed border-border p-6 text-center space-y-3">
-                          <Home className="h-10 w-10 text-muted-foreground mx-auto" />
-                          <div>
-                            <p className="font-medium">No primary address set</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              Your primary address is your official residence on record.
-                            </p>
-                          </div>
-                        </div>
-                        {/* Two-step explanation */}
-                        <div className="rounded-lg bg-muted/40 p-4 space-y-3 text-sm">
-                          <p className="font-medium flex items-center gap-2">
-                            <Info className="h-4 w-4 text-primary" /> How it works
-                          </p>
-                          <div className="space-y-2 text-muted-foreground">
-                            <div className="flex items-start gap-2">
-                              <span className="font-mono text-primary font-bold shrink-0">1.</span>
-                              <span>Search the National Address Registry (NAR) for your home address.</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-mono text-primary font-bold shrink-0">2a.</span>
-                              <span>If your address is found — declare it as your primary residence.</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <span className="font-mono text-primary font-bold shrink-0">2b.</span>
-                              <span>If your address is <strong>not</strong> in the registry yet — submit a registration request and we'll add it.</span>
-                            </div>
-                          </div>
-                        </div>
-                        <Button className="w-full" onClick={() => setAddressFlowOpen(true)}>
-                          <Search className="h-4 w-4 mr-2" />
-                          Find or Register My Address
-                          <ArrowRight className="h-4 w-4 ml-2" />
+              {!isAuthenticated && (
+                <Card className="border-primary/20 bg-primary/5">
+                  <CardContent className="py-4">
+                    <div className="flex items-start gap-3">
+                      <User className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm">{t('auth:loginRequired')}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Sign in to manage your addresses and submit requests.
+                        </p>
+                        <Button onClick={() => window.location.href = '/auth'} size="sm" className="mt-3 w-full">
+                          <User className="h-3.5 w-3.5 mr-1.5" />
+                          {t('auth:login')}
+                          <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                         </Button>
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Secondary Addresses */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <MapPin className="h-5 w-5 text-secondary" />
-                      Secondary Addresses ({secondaryAddresses.length})
-                    </CardTitle>
-                    <CardDescription>
-                      Additional addresses (work, temporary, etc.)
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {secondaryAddresses.length > 0 ? (
-                      <div className="space-y-3 max-h-64 overflow-y-auto">
-                        {secondaryAddresses.map((address) => (
-                          <div key={address.id} className="p-3 border rounded-lg">
-                            <div className="flex items-center justify-between mb-2">
-                              <Badge variant="outline" className="font-mono text-xs">
-                                {address.uac}
-                              </Badge>
-                              <Badge variant="secondary" className="text-xs">
-                                {address.address_kind}
-                              </Badge>
-                            </div>
-                            {address.street && (
-                              <div className="text-sm text-muted-foreground">
-                                {address.street}, {address.city}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-4">
-                        <p className="text-muted-foreground mb-4">No secondary addresses</p>
-                      </div>
-                    )}
-                    <Button 
-                      onClick={() => setSecondaryAddressFormOpen(true)} 
-                      className="w-full mt-4"
-                      variant="outline"
-                    >
-                      Add Secondary Address
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          )}
-
-          {/* Household Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="household" className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-lg font-semibold">My Household</h2>
-                <p className="text-sm text-muted-foreground">
-                  Manage the people who live at your primary address — family members, dependents, and residents.
-                </p>
-              </div>
-              {primaryAddress ? (
-                <HouseholdManagement />
-              ) : (
-                <Card>
-                  <CardContent className="py-10 text-center space-y-4">
-                    <Users className="h-10 w-10 text-muted-foreground mx-auto" />
-                    <div>
-                      <p className="font-medium">No primary address set</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        You need a primary address before you can declare household members.
-                      </p>
                     </div>
-                    <Button onClick={() => setActiveTab('addresses')}>
-                      <Home className="h-4 w-4 mr-2" />
-                      Set Up My Address First
-                    </Button>
                   </CardContent>
                 </Card>
               )}
-            </TabsContent>
+            </>
           )}
 
-          {/* Saved Locations Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="saved" className="space-y-6">
-              <SavedLocationsManager />
-            </TabsContent>
-          )}
+          {/* ============ HOME SECTION ============ */}
+          {activeSection === 'home' && isAuthenticated && (
+            <>
+              {/* Sub-navigation pills */}
+              <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+                {[
+                  { id: 'addresses', icon: Home, label: 'Addresses' },
+                  { id: 'household', icon: Users, label: 'Household' },
+                  { id: 'saved', icon: MapPin, label: 'Saved' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setHomeSubTab(item.id)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] ${
+                      homeSubTab === item.id
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-muted/60 text-muted-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <item.icon className="h-3.5 w-3.5" />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
 
-          {/* Verification Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="verification" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <FileCheck className="h-5 w-5 text-primary" />
-                    Residency Verification Requests
-                  </CardTitle>
-                  <CardDescription>
-                    Manage your residency verification requests and upload supporting documents
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button onClick={() => setVerificationRequestsOpen(true)} className="w-full">
-                    <FileCheck className="mr-2 h-4 w-4" />
-                    View My Verification Requests
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          )}
-
-          {/* Notifications Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="notifications" className="space-y-6">
-              <ReporterNotifications />
-            </TabsContent>
-          )}
-
-          {/* Privacy Settings Tab */}
-          {isAuthenticated && (
-            <TabsContent value="privacy" className="space-y-6">
-              <AddressPrivacySettings />
-            </TabsContent>
-          )}
-
-          {/* My Businesses Tab */}
-          {isAuthenticated && (
-            <TabsContent value="businesses" className="space-y-6">
-              <CitizenBusinessesTab onRequestNewBusiness={() => setAddressFlowOpen(true)} />
-            </TabsContent>
-          )}
-
-          {/* Emergency Tab */}
-          <TabsContent value="emergency" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Phone className="h-5 w-5 text-destructive" />
-                    {t('emergency:contacts')}
-                  </CardTitle>
-                  <CardDescription>
-                    {t('emergency:contactEmergencyServices')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <EmergencyContacts />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-warning" />
-                    {t('common:importantInformation')}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>All searches return verified addresses only</li>
-                    <li>Personal information is protected and secure</li>
-                    <li>Coordinates are approximate for security</li>
-                    <li>Submit requests for new address registration</li>
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Deliveries Tab — Incoming + Pickup unified (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="deliveries" className="space-y-6">
-              <Tabs defaultValue="incoming">
-                <TabsList className="w-full sm:w-auto">
-                  <TabsTrigger value="incoming" className="flex items-center gap-2">
-                    <Package className="h-4 w-4" />
-                    Incoming
-                  </TabsTrigger>
-                  <TabsTrigger value="pickups" className="flex items-center gap-2">
-                    <Truck className="h-4 w-4" />
-                    Pickups
-                  </TabsTrigger>
-                  <TabsTrigger value="preferences" className="flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    Preferences
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="incoming" className="mt-4">
-                  <CitizenDeliveriesView />
-                </TabsContent>
-
-                <TabsContent value="pickups" className="mt-4 space-y-4">
+              {/* My Addresses */}
+              {homeSubTab === 'addresses' && (
+                <div className="space-y-4">
+                  {/* Primary Address */}
                   <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Truck className="h-5 w-5 text-primary" />
-                        {t('postal:pickup.title', 'Request Pickup')}
+                    <CardHeader className="pb-3">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Home className="h-4 w-4 text-primary" />
+                        Primary Address
                       </CardTitle>
-                      <CardDescription>
-                        {t('postal:pickup.description', 'Schedule a pickup for your packages')}
-                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button onClick={() => setPickupRequestOpen(true)}>
-                        <Truck className="h-4 w-4 mr-2" />
-                        {t('postal:pickup.requestPickup', 'Request Pickup')}
+                      {primaryAddress ? (
+                        <div className="space-y-3">
+                          {primaryAddress.street && (
+                            <div className="bg-muted/30 p-3 rounded-lg text-sm">
+                              <div className="font-medium flex items-center gap-1.5 mb-1">
+                                <MapPin className="h-3.5 w-3.5 text-primary" /> Location
+                              </div>
+                              <div>{primaryAddress.street}</div>
+                              {primaryAddress.building && <div>{primaryAddress.building}</div>}
+                              <div>{primaryAddress.city}, {primaryAddress.region}</div>
+                            </div>
+                          )}
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">UAC</span>
+                              <Badge variant="outline" className="font-mono text-[10px]">{primaryAddress.uac}</Badge>
+                            </div>
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="text-muted-foreground">Status</span>
+                              <Badge variant={primaryAddress.status === 'CONFIRMED' ? 'default' : 'destructive'} className="text-[10px]">
+                                {primaryAddress.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="rounded-lg border border-dashed border-border p-4 text-center space-y-2">
+                            <Home className="h-8 w-8 text-muted-foreground mx-auto" />
+                            <p className="font-medium text-sm">No primary address set</p>
+                            <p className="text-xs text-muted-foreground">Search the registry or submit a registration request.</p>
+                          </div>
+                          <Button className="w-full" size="sm" onClick={() => setAddressFlowOpen(true)}>
+                            <Search className="h-3.5 w-3.5 mr-1.5" />
+                            Find or Register My Address
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Secondary Addresses */}
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-secondary" />
+                          Secondary ({secondaryAddresses.length})
+                        </CardTitle>
+                        <Button size="sm" variant="ghost" onClick={() => setSecondaryAddressFormOpen(true)} className="h-8 text-xs">
+                          <Plus className="h-3.5 w-3.5 mr-1" /> Add
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    {secondaryAddresses.length > 0 && (
+                      <CardContent className="pt-0">
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {secondaryAddresses.map((address) => (
+                            <div key={address.id} className="p-2.5 border rounded-lg flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <Badge variant="outline" className="font-mono text-[10px]">{address.uac}</Badge>
+                                {address.street && (
+                                  <p className="text-xs text-muted-foreground mt-1 truncate">{address.street}, {address.city}</p>
+                                )}
+                              </div>
+                              <Badge variant="secondary" className="text-[10px] shrink-0">{address.address_kind}</Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    )}
+                  </Card>
+                </div>
+              )}
+
+              {/* Household */}
+              {homeSubTab === 'household' && (
+                primaryAddress ? (
+                  <HouseholdManagement />
+                ) : (
+                  <Card>
+                    <CardContent className="py-8 text-center space-y-3">
+                      <Users className="h-8 w-8 text-muted-foreground mx-auto" />
+                      <p className="font-medium text-sm">No primary address set</p>
+                      <p className="text-xs text-muted-foreground">Set up your address first to manage household members.</p>
+                      <Button size="sm" onClick={() => { setHomeSubTab('addresses'); }}>
+                        <Home className="h-3.5 w-3.5 mr-1.5" /> Set Up Address
                       </Button>
                     </CardContent>
                   </Card>
-                </TabsContent>
+                )
+              )}
 
-                <TabsContent value="preferences" className="mt-4 space-y-4">
-                  {primaryAddress ? (
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Settings className="h-5 w-5 text-primary" />
-                          {t('postal:preferences.title', 'Delivery Preferences')}
-                        </CardTitle>
-                        <CardDescription>
-                          {t('postal:preferences.managePreferences', 'Manage delivery preferences for your addresses')}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setSelectedAddressForPrefs(primaryAddress.uac);
-                            setDeliveryPreferencesOpen(true);
-                          }}
-                        >
-                          <Settings className="h-4 w-4 mr-2" />
-                          {t('postal:preferences.title', 'Manage Preferences')}
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card>
-                      <CardContent className="py-10 text-center space-y-3">
-                        <Package className="h-10 w-10 text-muted-foreground mx-auto" />
-                        <p className="text-sm text-muted-foreground">
-                          Set a primary address first to manage delivery preferences.
-                        </p>
-                        <Button variant="outline" onClick={() => setActiveTab('addresses')}>
-                          <Home className="h-4 w-4 mr-2" /> Set Up Address
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  )}
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
+              {/* Saved Locations */}
+              {homeSubTab === 'saved' && <SavedLocationsManager />}
+            </>
           )}
-        </Tabs>
 
-        {/* Footer */}
-        <Footer />
+          {/* Home for unauthenticated — redirect to search */}
+          {activeSection === 'home' && !isAuthenticated && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardContent className="py-6 text-center space-y-3">
+                <User className="h-8 w-8 text-primary mx-auto" />
+                <p className="font-medium text-sm">{t('auth:loginRequired')}</p>
+                <p className="text-xs text-muted-foreground">Sign in to access your home dashboard.</p>
+                <Button onClick={() => window.location.href = '/auth'} size="sm">
+                  <User className="h-3.5 w-3.5 mr-1.5" /> {t('auth:login')}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Dialogs */}
-        {/* Submit Request Dialog */}
-        <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{t('dashboard:submitRequest')}</DialogTitle>
-            </DialogHeader>
-            <AddressRequestForm 
-              onCancel={() => setSubmitRequestOpen(false)}
-              onSuccess={() => setSubmitRequestOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
+          {/* ============ SERVICES SECTION ============ */}
+          {activeSection === 'services' && (
+            <>
+              {/* Service navigation cards */}
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'requests', icon: FileText, label: 'Requests', color: 'text-primary' },
+                  { id: 'deliveries', icon: Package, label: 'Deliveries', color: 'text-primary', auth: true },
+                  { id: 'businesses', icon: Building2, label: 'Businesses', color: 'text-primary', auth: true },
+                  { id: 'verification', icon: FileCheck, label: 'Verification', color: 'text-primary', auth: true },
+                ].filter(item => !item.auth || isAuthenticated).map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => setServicesSubTab(item.id)}
+                    className={`flex flex-col items-center gap-2 p-4 rounded-xl border transition-all min-h-[80px] ${
+                      servicesSubTab === item.id
+                        ? 'border-primary bg-primary/5 shadow-sm'
+                        : 'border-border bg-card hover:border-primary/30'
+                    }`}
+                  >
+                    <item.icon className={`h-5 w-5 ${servicesSubTab === item.id ? 'text-primary' : 'text-muted-foreground'}`} />
+                    <span className={`text-xs font-medium ${servicesSubTab === item.id ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {item.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-        {/* Status Dialog */}
-        <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{t('dashboard:requestStatus')}</DialogTitle>
-            </DialogHeader>
-            <AddressRequestStatus />
-          </DialogContent>
-        </Dialog>
+              {/* Requests */}
+              {servicesSubTab === 'requests' && (
+                <div className="space-y-3">
+                  <Card className="overflow-hidden">
+                    <button 
+                      className="w-full p-4 flex items-center gap-3 hover:bg-muted/30 transition-colors min-h-[56px]"
+                      onClick={() => setSubmitRequestOpen(true)}
+                      disabled={!isAuthenticated}
+                    >
+                      <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+                        <FileText className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="text-left flex-1 min-w-0">
+                        <p className="text-sm font-medium">{t('dashboard:submitRequest')}</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard:submitRequestDescription')}</p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    </button>
+                  </Card>
+                  <Card className="overflow-hidden">
+                    <button 
+                      className="w-full p-4 flex items-center gap-3 hover:bg-muted/30 transition-colors min-h-[56px]"
+                      onClick={() => setStatusOpen(true)}
+                      disabled={!isAuthenticated}
+                    >
+                      <div className="p-2 rounded-lg bg-primary/10 shrink-0">
+                        <Clock className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="text-left flex-1 min-w-0">
+                        <p className="text-sm font-medium">{t('dashboard:requestStatus')}</p>
+                        <p className="text-xs text-muted-foreground">{t('dashboard:requestStatusDescription')}</p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    </button>
+                  </Card>
+                </div>
+              )}
 
-        {/* Verification Requests Dialog */}
-        <Dialog open={verificationRequestsOpen} onOpenChange={setVerificationRequestsOpen}>
-          <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>My Verification Requests</DialogTitle>
-            </DialogHeader>
-            <UserVerificationRequests />
-          </DialogContent>
-        </Dialog>
+              {/* Deliveries */}
+              {servicesSubTab === 'deliveries' && isAuthenticated && (
+                <Tabs defaultValue="incoming">
+                  <TabsList className="w-full grid grid-cols-3 h-9">
+                    <TabsTrigger value="incoming" className="text-xs">
+                      <Package className="h-3.5 w-3.5 mr-1" /> Incoming
+                    </TabsTrigger>
+                    <TabsTrigger value="pickups" className="text-xs">
+                      <Truck className="h-3.5 w-3.5 mr-1" /> Pickups
+                    </TabsTrigger>
+                    <TabsTrigger value="preferences" className="text-xs">
+                      <Settings className="h-3.5 w-3.5 mr-1" /> Prefs
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="incoming" className="mt-3">
+                    <CitizenDeliveriesView />
+                  </TabsContent>
+                  <TabsContent value="pickups" className="mt-3">
+                    <Card>
+                      <CardContent className="py-4">
+                        <Button onClick={() => setPickupRequestOpen(true)} className="w-full" size="sm">
+                          <Truck className="h-3.5 w-3.5 mr-1.5" />
+                          {t('postal:pickup.requestPickup', 'Request Pickup')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                  <TabsContent value="preferences" className="mt-3">
+                    {primaryAddress ? (
+                      <Card>
+                        <CardContent className="py-4">
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedAddressForPrefs(primaryAddress.uac);
+                              setDeliveryPreferencesOpen(true);
+                            }}
+                          >
+                            <Settings className="h-3.5 w-3.5 mr-1.5" />
+                            {t('postal:preferences.title', 'Manage Preferences')}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <Card>
+                        <CardContent className="py-6 text-center space-y-2">
+                          <Package className="h-8 w-8 text-muted-foreground mx-auto" />
+                          <p className="text-xs text-muted-foreground">Set a primary address first.</p>
+                          <Button variant="outline" size="sm" onClick={() => { setActiveSection('home'); setHomeSubTab('addresses'); }}>
+                            <Home className="h-3.5 w-3.5 mr-1" /> Set Up Address
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              )}
 
-        {/* Unified Address Registration / Declaration Flow */}
-        <Dialog open={addressFlowOpen} onOpenChange={setAddressFlowOpen}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Home className="h-5 w-5 text-primary" />
-                Find or Register Your Address
-              </DialogTitle>
-              <DialogDescription>
-                Search the national registry for your address. If it's not there yet, you can submit a registration request in the same flow.
-              </DialogDescription>
-            </DialogHeader>
-            <UnifiedAddressRequestFlow
-              initialMode="citizen"
-              onComplete={() => {
-                setAddressFlowOpen(false);
-                fetchAddresses();
-              }}
-              onCancel={() => setAddressFlowOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
+              {/* Businesses */}
+              {servicesSubTab === 'businesses' && isAuthenticated && (
+                <CitizenBusinessesTab onRequestNewBusiness={() => setAddressFlowOpen(true)} />
+              )}
 
-        {/* Secondary Address Form Dialog */}
-        <Dialog open={secondaryAddressFormOpen} onOpenChange={setSecondaryAddressFormOpen}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add Secondary Address</DialogTitle>
-              <DialogDescription>
-                Add an additional address (work, temporary residence, etc.)
-              </DialogDescription>
-            </DialogHeader>
-            <AddSecondaryAddressForm 
-              onSuccess={() => {
-                setSecondaryAddressFormOpen(false);
-                fetchAddresses();
-              }}
-            />
-            <div className="flex gap-2 mt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setSecondaryAddressFormOpen(false)}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
+              {/* Verification */}
+              {servicesSubTab === 'verification' && isAuthenticated && (
+                <Card>
+                  <CardContent className="py-4">
+                    <Button onClick={() => setVerificationRequestsOpen(true)} className="w-full" size="sm">
+                      <FileCheck className="h-3.5 w-3.5 mr-1.5" />
+                      View My Verification Requests
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+
+          {/* ============ ALERTS SECTION ============ */}
+          {activeSection === 'alerts' && (
+            <div className="space-y-4">
+              {/* Notifications */}
+              {isAuthenticated && (
+                <div className="space-y-2">
+                  <h2 className="text-sm font-semibold flex items-center gap-2">
+                    <Bell className="h-4 w-4 text-primary" />
+                    Notifications
+                  </h2>
+                  <ReporterNotifications />
+                </div>
+              )}
+
+              {/* Emergency */}
+              <div className="space-y-2">
+                <h2 className="text-sm font-semibold flex items-center gap-2 text-destructive">
+                  <Phone className="h-4 w-4" />
+                  {t('emergency:contacts')}
+                </h2>
+                <Card>
+                  <CardContent className="py-3">
+                    <EmergencyContacts />
+                  </CardContent>
+                </Card>
+              </div>
+
+              <Card>
+                <CardContent className="py-3">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      <li>All searches return verified addresses only</li>
+                      <li>Personal information is protected and secure</li>
+                      <li>Coordinates are approximate for security</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </DialogContent>
-        </Dialog>
+          )}
 
-        {/* Pickup Request Dialog */}
-        <PickupRequestForm
-          open={pickupRequestOpen}
-          onClose={() => setPickupRequestOpen(false)}
-        />
+          {/* ============ PROFILE SECTION ============ */}
+          {activeSection === 'profile' && (
+            <div className="space-y-4">
+              {isAuthenticated ? (
+                <>
+                  {/* User Info Card */}
+                  <Card>
+                    <CardContent className="py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-sm truncate">{userName}</p>
+                          <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
 
-        {/* Delivery Preferences Dialog */}
-        <DeliveryPreferencesForm
-          open={deliveryPreferencesOpen}
-          onClose={() => setDeliveryPreferencesOpen(false)}
-          addressUac={selectedAddressForPrefs}
-        />
-      </div>
+                  {/* Privacy Settings */}
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold flex items-center gap-2">
+                      <Settings className="h-4 w-4 text-primary" />
+                      Privacy & Settings
+                    </h2>
+                    <AddressPrivacySettings />
+                  </div>
+
+                  {/* Sign Out */}
+                  <Button variant="outline" className="w-full" onClick={signOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Card className="border-primary/20 bg-primary/5">
+                  <CardContent className="py-6 text-center space-y-3">
+                    <User className="h-8 w-8 text-primary mx-auto" />
+                    <p className="font-medium text-sm">{t('auth:loginRequired')}</p>
+                    <Button onClick={() => window.location.href = '/auth'} size="sm">
+                      <User className="h-3.5 w-3.5 mr-1.5" /> {t('auth:login')}
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer - only on desktop */}
+        <div className="hidden lg:block">
+          <Footer />
+        </div>
+      </main>
+
+      {/* Bottom Navigation */}
+      <CitizenBottomNav
+        activeSection={activeSection}
+        onNavigate={setActiveSection}
+        isAuthenticated={isAuthenticated}
+      />
+
+      {/* ============ DIALOGS ============ */}
+      <Dialog open={submitRequestOpen} onOpenChange={setSubmitRequestOpen}>
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t('dashboard:submitRequest')}</DialogTitle>
+          </DialogHeader>
+          <AddressRequestForm 
+            onCancel={() => setSubmitRequestOpen(false)}
+            onSuccess={() => setSubmitRequestOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={statusOpen} onOpenChange={setStatusOpen}>
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t('dashboard:requestStatus')}</DialogTitle>
+          </DialogHeader>
+          <AddressRequestStatus />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={verificationRequestsOpen} onOpenChange={setVerificationRequestsOpen}>
+        <DialogContent className="max-w-6xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>My Verification Requests</DialogTitle>
+          </DialogHeader>
+          <UserVerificationRequests />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={addressFlowOpen} onOpenChange={setAddressFlowOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Home className="h-5 w-5 text-primary" />
+              Find or Register Your Address
+            </DialogTitle>
+            <DialogDescription>
+              Search the national registry for your address. If it's not there yet, you can submit a registration request.
+            </DialogDescription>
+          </DialogHeader>
+          <UnifiedAddressRequestFlow
+            initialMode="citizen"
+            onComplete={() => { setAddressFlowOpen(false); fetchAddresses(); }}
+            onCancel={() => setAddressFlowOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={secondaryAddressFormOpen} onOpenChange={setSecondaryAddressFormOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Add Secondary Address</DialogTitle>
+            <DialogDescription>Add an additional address (work, temporary residence, etc.)</DialogDescription>
+          </DialogHeader>
+          <AddSecondaryAddressForm 
+            onSuccess={() => { setSecondaryAddressFormOpen(false); fetchAddresses(); }}
+          />
+          <Button variant="outline" onClick={() => setSecondaryAddressFormOpen(false)} className="w-full mt-2">
+            Cancel
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      <PickupRequestForm open={pickupRequestOpen} onClose={() => setPickupRequestOpen(false)} />
+      <DeliveryPreferencesForm open={deliveryPreferencesOpen} onClose={() => setDeliveryPreferencesOpen(false)} addressUac={selectedAddressForPrefs} />
     </div>
   );
 };
