@@ -82,12 +82,8 @@ const CitizenPortalUnified = () => {
     }
   }, [isAuthenticated, activeTab]);
 
-  // Effect to fetch CAR data when authenticated
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      fetchAddresses();
-    }
-  }, [isAuthenticated, user, fetchAddresses]);
+  // CAR data is automatically fetched by the useCitizenAddresses hook
+  // No need for a manual refetch here - it caused infinite loops
 
   if (roleLoading || carLoading) {
     return (
