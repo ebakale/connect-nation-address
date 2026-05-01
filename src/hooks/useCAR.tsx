@@ -80,7 +80,7 @@ export const useCitizenAddresses = () => {
   const { person } = usePerson();
   const { toast } = useToast();
 
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     if (!person) {
       setAddresses([]);
       setLoading(false);
@@ -111,11 +111,11 @@ export const useCitizenAddresses = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [person, toast]);
 
   useEffect(() => {
     fetchAddresses();
-  }, [person]);
+  }, [fetchAddresses]);
 
   const setPrimaryAddress = async (input: AddressInput & { effective_from?: string }) => {
     if (!person) throw new Error('Person not found');
