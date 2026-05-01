@@ -1,9 +1,9 @@
 import React from 'react';
-import { Home, Search, Briefcase, Bell, User } from 'lucide-react';
+import { Home, Search, Package, Users, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 
-export type CitizenSection = 'home' | 'search' | 'services' | 'alerts' | 'profile';
+export type CitizenSection = 'home' | 'search' | 'deliveries' | 'household' | 'more';
 
 interface CitizenBottomNavProps {
   activeSection: CitizenSection;
@@ -20,12 +20,12 @@ const CitizenBottomNav: React.FC<CitizenBottomNavProps> = ({
 }) => {
   const { t } = useTranslation(['common']);
 
-  const navItems: { id: CitizenSection; icon: typeof Home; label: string; authRequired?: boolean }[] = [
+  const navItems: { id: CitizenSection; icon: typeof Home; label: string }[] = [
     { id: 'home', icon: Home, label: t('common:navigation.home', 'Home') },
     { id: 'search', icon: Search, label: t('common:navigation.search', 'Search') },
-    { id: 'services', icon: Briefcase, label: t('common:navigation.services', 'Services') },
-    { id: 'alerts', icon: Bell, label: t('common:navigation.alerts', 'Alerts') },
-    { id: 'profile', icon: User, label: t('common:navigation.profile', 'Profile') },
+    { id: 'deliveries', icon: Package, label: t('common:navigation.deliveries', 'Deliveries') },
+    { id: 'household', icon: Users, label: t('common:navigation.household', 'Household') },
+    { id: 'more', icon: MoreHorizontal, label: t('common:navigation.more', 'More') },
   ];
 
   return (
@@ -49,8 +49,8 @@ const CitizenBottomNav: React.FC<CitizenBottomNavProps> = ({
             >
               <div className="relative">
                 <Icon className={cn("h-5 w-5 transition-transform duration-150", isActive && "scale-110")} />
-                {/* Notification badge */}
-                {item.id === 'alerts' && notificationCount > 0 && (
+                {/* Notification badge on More when there are alerts */}
+                {item.id === 'more' && notificationCount > 0 && (
                   <span className="absolute -top-1 -right-1.5 min-w-[14px] h-[14px] rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center px-0.5">
                     {notificationCount > 9 ? '9+' : notificationCount}
                   </span>
