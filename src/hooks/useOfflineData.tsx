@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { offlineStorage, OfflineAddress, OfflineIncident, OfflineUser } from '@/lib/offlineStorage';
-import { useOffline } from './useOffline';
+import { useOffline, registerOfflineSyncHandler } from './useOffline';
 import { useAuth } from './useAuth';
 import { useUserRole } from './useUserRole';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,14 +14,10 @@ export const useOfflineAddresses = () => {
   const { user } = useAuth();
   const { isOnline } = useOffline();
   const { role } = useUserRole();
-  
+
   const isFieldAgent = role === 'field_agent';
 
-  useEffect(() => {
-    loadAddresses();
-  }, [user]);
-
-  const loadAddresses = async () => {
+  const loadAddresses = useCallback(async () => {
     try {
       setLoading(true);
       await offlineStorage.init();
@@ -33,7 +29,11 @@ export const useOfflineAddresses = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    loadAddresses();
+  }, [loadAddresses]);
 
   const saveAddress = async (address: Omit<OfflineAddress, 'id' | 'created_at' | 'synced'>) => {
     try {
@@ -41,7 +41,9 @@ export const useOfflineAddresses = () => {
         ...address,
         id: crypto.randomUUID(),
         created_at: new Date().toISOString(),
-        synced: isOnline
+        synced: isOnline,
+        last_sync_attempt: null,
+        sync_retry_count: 0
       };
 
       await offlineStorage.saveAddress(newAddress);
@@ -59,8 +61,8 @@ export const useOfflineAddresses = () => {
     }
   };
 
-  const syncAddresses = async (retryCount = 0) => {
-    if (!isOnline) {
+  const syncAddresses = useCallback(async (retryCount = 0) => {
+    if (!navigator.onLine) {
       toast.error('Cannot sync while offline');
       return;
     }
@@ -68,11 +70,8 @@ export const useOfflineAddresses = () => {
     try {
       setSyncErrors([]);
       const unsynced = await offlineStorage.getUnsyncedAddresses();
-      
-      if (unsynced.length === 0) {
-        toast.info('No addresses to sync');
-        return;
-      }
+
+      if (unsynced.length === 0) return;
 
       setSyncProgress({ current: 0, total: unsynced.length, syncing: true });
       let syncedCount = 0;
@@ -82,9 +81,8 @@ export const useOfflineAddresses = () => {
         const address = unsynced[i];
         try {
           setSyncProgress(prev => ({ ...prev, current: i + 1 }));
-          
+
           if (isFieldAgent) {
-            // Field agents submit to address_requests table for review
             const { error: insertError } = await supabase
               .from('address_requests')
               .insert({
@@ -103,10 +101,9 @@ export const useOfflineAddresses = () => {
                 claimant_type: 'field_agent',
                 justification: 'Field agent offline address capture'
               });
-            
+
             if (insertError) throw insertError;
           } else {
-            // NAR authorities insert directly to addresses table
             const { error: insertError } = await supabase
               .from('addresses')
               .insert({
@@ -124,10 +121,10 @@ export const useOfflineAddresses = () => {
                 verified: false,
                 public: false
               });
-            
+
             if (insertError) throw insertError;
           }
-          
+
           await offlineStorage.markAddressSynced(address.id);
           syncedCount++;
         } catch (error) {
@@ -142,13 +139,11 @@ export const useOfflineAddresses = () => {
 
       if (errors.length > 0) {
         toast.warning(`Synced ${syncedCount}/${unsynced.length} addresses. ${errors.length} failed.`);
-        
-        // Auto-retry failed syncs with exponential backoff
         if (retryCount < 3 && errors.length < unsynced.length / 2) {
-          const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+          const delay = Math.pow(2, retryCount) * 1000;
           setTimeout(() => syncAddresses(retryCount + 1), delay);
         }
-      } else {
+      } else if (syncedCount > 0) {
         toast.success(`Successfully synced ${syncedCount} addresses`);
       }
 
@@ -159,14 +154,18 @@ export const useOfflineAddresses = () => {
       toast.error('Failed to sync addresses');
       setSyncErrors([`Sync failed: ${error}`]);
     }
-  };
+  }, [isFieldAgent, loadAddresses, user?.id]);
+
+  // Auto-sync when connectivity resumes
+  useEffect(() => {
+    return registerOfflineSyncHandler(async () => { await syncAddresses(); });
+  }, [syncAddresses]);
 
   const getUnsyncedCount = async () => {
     try {
       const unsynced = await offlineStorage.getUnsyncedAddresses();
       return unsynced.length;
-    } catch (error) {
-      console.error('Failed to get unsynced count:', error);
+    } catch {
       return 0;
     }
   };
@@ -188,13 +187,10 @@ export const useOfflineIncidents = () => {
   const [loading, setLoading] = useState(true);
   const [syncProgress, setSyncProgress] = useState({ current: 0, total: 0, syncing: false });
   const [syncErrors, setSyncErrors] = useState<string[]>([]);
+  const { user } = useAuth();
   const { isOnline } = useOffline();
 
-  useEffect(() => {
-    loadIncidents();
-  }, []);
-
-  const loadIncidents = async () => {
+  const loadIncidents = useCallback(async () => {
     try {
       setLoading(true);
       await offlineStorage.init();
@@ -206,7 +202,11 @@ export const useOfflineIncidents = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadIncidents();
+  }, [loadIncidents]);
 
   const saveIncident = async (incident: Omit<OfflineIncident, 'id' | 'created_at' | 'synced'>) => {
     try {
@@ -214,7 +214,9 @@ export const useOfflineIncidents = () => {
         ...incident,
         id: crypto.randomUUID(),
         created_at: new Date().toISOString(),
-        synced: isOnline
+        synced: isOnline,
+        last_sync_attempt: null,
+        sync_retry_count: 0
       };
 
       await offlineStorage.saveIncident(newIncident);
@@ -232,8 +234,8 @@ export const useOfflineIncidents = () => {
     }
   };
 
-  const syncIncidents = async (retryCount = 0) => {
-    if (!isOnline) {
+  const syncIncidents = useCallback(async (retryCount = 0) => {
+    if (!navigator.onLine) {
       toast.error('Cannot sync while offline');
       return;
     }
@@ -241,11 +243,8 @@ export const useOfflineIncidents = () => {
     try {
       setSyncErrors([]);
       const unsynced = await offlineStorage.getUnsyncedIncidents();
-      
-      if (unsynced.length === 0) {
-        toast.info('No incidents to sync');
-        return;
-      }
+
+      if (unsynced.length === 0) return;
 
       setSyncProgress({ current: 0, total: unsynced.length, syncing: true });
       let syncedCount = 0;
@@ -255,11 +254,23 @@ export const useOfflineIncidents = () => {
         const incident = unsynced[i];
         try {
           setSyncProgress(prev => ({ ...prev, current: i + 1 }));
-          
-          // Here you would normally sync with your backend
-          // Simulate network delay and potential failure
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
+
+          const { error: insertError } = await supabase
+            .from('incidents')
+            .insert({
+              reported_by: user?.id,
+              incident_number: incident.incident_number,
+              description: incident.description,
+              priority: incident.priority,
+              status: incident.status,
+              latitude: incident.latitude ?? null,
+              longitude: incident.longitude ?? null,
+              address: incident.address ?? null,
+              created_at: incident.created_at
+            });
+
+          if (insertError) throw insertError;
+
           await offlineStorage.markIncidentSynced(incident.id);
           syncedCount++;
         } catch (error) {
@@ -274,13 +285,11 @@ export const useOfflineIncidents = () => {
 
       if (errors.length > 0) {
         toast.warning(`Synced ${syncedCount}/${unsynced.length} incidents. ${errors.length} failed.`);
-        
-        // Auto-retry failed syncs with exponential backoff
         if (retryCount < 3 && errors.length < unsynced.length / 2) {
           const delay = Math.pow(2, retryCount) * 1000;
           setTimeout(() => syncIncidents(retryCount + 1), delay);
         }
-      } else {
+      } else if (syncedCount > 0) {
         toast.success(`Successfully synced ${syncedCount} incidents`);
       }
 
@@ -291,14 +300,18 @@ export const useOfflineIncidents = () => {
       toast.error('Failed to sync incidents');
       setSyncErrors([`Sync failed: ${error}`]);
     }
-  };
+  }, [loadIncidents, user?.id]);
+
+  // Auto-sync when connectivity resumes
+  useEffect(() => {
+    return registerOfflineSyncHandler(async () => { await syncIncidents(); });
+  }, [syncIncidents]);
 
   const getUnsyncedCount = async () => {
     try {
       const unsynced = await offlineStorage.getUnsyncedIncidents();
       return unsynced.length;
-    } catch (error) {
-      console.error('Failed to get unsynced count:', error);
+    } catch {
       return 0;
     }
   };

@@ -62,11 +62,25 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const location = useLocation();
   const { user } = useAuth();
   
-  const { 
+  const {
     isCitizen, isFieldAgent, isRegistrar, isCarAdmin,
     canVerifyNAR, canVerifyCAR, hasAdminAccess, isAdmin,
-    hasNDAAAccess, canVerifyAddresses, isNARAuthority, narAuthorityData
+    hasNDAAAccess, canVerifyAddresses, isNARAuthority, narAuthorityData,
+    isVerifier, isResidencyVerifier
   } = useUserRole();
+
+  // Determine primary role label for the header context badge
+  const primaryRoleLabel = (() => {
+    if (isNARAuthority) return { label: 'NAR Authority', color: 'text-primary' };
+    if (isAdmin || hasNDAAAccess) return { label: 'Administrator', color: 'text-destructive' };
+    if (isRegistrar) return { label: 'Registrar', color: 'text-info' };
+    if (isFieldAgent) return { label: 'Field Agent', color: 'text-success' };
+    if (isCarAdmin) return { label: 'CAR Admin', color: 'text-secondary' };
+    if (isVerifier || canVerifyNAR) return { label: 'Verifier', color: 'text-warning' };
+    if (isResidencyVerifier || canVerifyCAR) return { label: 'Residency Verifier', color: 'text-warning' };
+    if (isCitizen) return { label: 'Citizen', color: 'text-muted-foreground' };
+    return { label: 'User', color: 'text-muted-foreground' };
+  })();
 
   const [favorites, setFavoritesState] = useState<string[]>(getFavorites);
 
@@ -121,17 +135,17 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
   const visibleItems = navigationItems.filter(item => item.visible);
   const itemMap = new Map(visibleItems.map(i => [i.id, i]));
 
-  // Group definitions with role-based default open
+  // Group definitions — ordered so the primary role's group appears first when relevant
   const groupDefs: { key: string; label: string; ids: string[]; defaultOpen: boolean }[] = [
-    { key: 'main', label: t('main'), ids: ['overview', 'nar-authority-dashboard', 'registrar-dashboard'], defaultOpen: true },
-    { key: 'quickActions', label: t('quickActions', 'Quick Actions'), ids: ['unified-address-request', 'my-address-requests', 'address-search'], defaultOpen: isCitizen || isNARAuthority },
-    { key: 'verification', label: t('verification'), ids: ['verification-queue', 'verification-tools', 'residency-verification'], defaultOpen: canVerifyNAR || isNARAuthority || isCarAdmin },
-    { key: 'car', label: t('citizenAddressRegistry'), ids: ['car-admin', 'citizen-address-portal', 'residency-verification-dashboard'], defaultOpen: isCarAdmin },
-    { key: 'fieldWork', label: t('fieldWork'), ids: ['capture-address', 'field-drafts', 'field-map'], defaultOpen: isFieldAgent },
-    { key: 'deliveries', label: t('deliveries', 'Deliveries'), ids: ['my-deliveries', 'request-pickup', 'delivery-preferences'], defaultOpen: false },
-    { key: 'admin', label: t('administration'), ids: ['admin-panel', 'analytics', 'province-management'], defaultOpen: isAdmin || hasNDAAAccess },
-    { key: 'other', label: t('other', 'Other'), ids: ['saved-addresses', 'my-businesses'], defaultOpen: false },
-    { key: 'settings', label: t('settings'), ids: ['emergency-contacts', 'profile'], defaultOpen: false },
+    { key: 'main',         label: t('main'),                      ids: ['overview', 'nar-authority-dashboard', 'registrar-dashboard'], defaultOpen: true },
+    { key: 'fieldWork',    label: t('fieldWork'),                 ids: ['capture-address', 'field-drafts', 'field-map'],               defaultOpen: isFieldAgent },
+    { key: 'verification', label: t('verification'),              ids: ['verification-queue', 'verification-tools', 'residency-verification'], defaultOpen: canVerifyNAR || isNARAuthority || isCarAdmin || isVerifier || isResidencyVerifier },
+    { key: 'car',          label: t('citizenAddressRegistry'),    ids: ['car-admin', 'citizen-address-portal', 'residency-verification-dashboard'], defaultOpen: isCarAdmin || isRegistrar },
+    { key: 'quickActions', label: t('quickActions', 'Quick Actions'), ids: ['unified-address-request', 'my-address-requests', 'address-search'], defaultOpen: isNARAuthority },
+    { key: 'deliveries',   label: t('deliveries', 'Deliveries'),  ids: ['my-deliveries', 'request-pickup', 'delivery-preferences'],   defaultOpen: false },
+    { key: 'admin',        label: t('administration'),            ids: ['admin-panel', 'analytics', 'province-management'],           defaultOpen: isAdmin || hasNDAAAccess },
+    { key: 'other',        label: t('other', 'Other'),            ids: ['saved-addresses', 'my-businesses'],                         defaultOpen: false },
+    { key: 'settings',     label: t('settings'),                  ids: ['emergency-contacts', 'profile'],                           defaultOpen: false },
   ];
 
   // Build groups with only visible items
@@ -208,39 +222,36 @@ export function DashboardSidebar({ onNavigationClick, pendingCount = 0, activeIt
         {!collapsed && (
           <div className="px-4 py-3 border-b border-border mb-2">
             <div className="flex items-center gap-3">
-              <div className="p-1.5 bg-primary/10 rounded-lg">
-                {isNARAuthority ? (
+              <div className="p-1.5 bg-primary/10 rounded-lg shrink-0">
+                {isNARAuthority || isAdmin || hasNDAAAccess ? (
                   <Shield className="h-5 w-5 text-primary" />
                 ) : (
-                  <img 
-                    src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png" 
-                    alt={t('biakamLogoAlt')} 
-                    className="h-5 w-auto" 
+                  <img
+                    src="/lovable-uploads/ff1703fb-c7ab-498c-8bb5-931d66522fba.png"
+                    alt={t('biakamLogoAlt')}
+                    className="h-5 w-auto"
                   />
                 )}
               </div>
               <div className="min-w-0">
-                <h2 className="font-semibold text-sm text-foreground truncate">
-                  {isNARAuthority ? t('narAuthority') : 'ConEG'}
-                </h2>
-                <p className="text-xs text-muted-foreground truncate">
-                  {isNARAuthority 
-                    ? (narAuthorityData?.authority_level === 'national' ? t('nationalLevel') :
-                       narAuthorityData?.authority_level === 'regional' ? t('regionalLevel') :
-                       narAuthorityData?.authority_level === 'municipal' ? t('municipalLevel') :
-                       t('localLevel'))
-                    : t('addressSystem')
-                  }
+                <h2 className="font-semibold text-sm text-foreground truncate">ConEG</h2>
+                <p className={cn("text-xs font-medium truncate", primaryRoleLabel.color)}>
+                  {primaryRoleLabel.label}
                 </p>
               </div>
             </div>
-            
-            {isNARAuthority && (
+
+            {isNARAuthority && narAuthorityData && (
               <div className="mt-3 p-2 bg-muted rounded-md">
                 <p className="text-xs text-muted-foreground mb-1">{t('jurisdiction')}</p>
                 <div className="flex items-center gap-1.5">
                   <Globe className="h-3 w-3 text-primary" />
-                  <span className="text-xs font-medium text-foreground">{t('nationalWide')}</span>
+                  <span className="text-xs font-medium text-foreground">
+                    {narAuthorityData.authority_level === 'national' ? t('nationalWide') :
+                     narAuthorityData.authority_level === 'regional' ? t('regionalLevel') :
+                     narAuthorityData.authority_level === 'municipal' ? t('municipalLevel') :
+                     t('localLevel')}
+                  </span>
                 </div>
               </div>
             )}

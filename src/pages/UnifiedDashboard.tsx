@@ -76,6 +76,7 @@ import { useCitizenAddresses } from '@/hooks/useCAR';
 import { Truck } from 'lucide-react';
 
 import { NARCARTestPanel } from "@/components/NARCARTestPanel";
+import { MapErrorBoundary } from "@/components/ErrorBoundary";
 import { RegistrarDashboardView } from "@/components/RegistrarDashboardView";
 import { SystemIntegration } from "@/components/SystemIntegration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -149,17 +150,21 @@ const UnifiedDashboard = () => {
     m.scope_type === 'region' || m.scope_type === 'province' || m.scope_type === 'city'
   );
 
-  // Route users to appropriate dashboard based on their primary role
+  // Route users to the appropriate dashboard based on their primary role.
+  // Pure citizens (no admin/operational roles) go to the citizen portal.
+  const isPureCitizen = isCitizen && !hasAdminAccess && !isVerifier && !isFieldAgent && !isRegistrar && !isCarAdmin && !isResidencyVerifier && !isNARAuthority;
+
   useEffect(() => {
     if (!loading) {
       if (isPoliceRole) {
         navigate('/police', { replace: true });
       } else if (isPostalRole) {
         navigate('/postal', { replace: true });
+      } else if (isPureCitizen) {
+        navigate('/citizen', { replace: true });
       }
-      // All addressing-related roles now stay on unified dashboard
     }
-  }, [loading, isPoliceRole, isPostalRole, navigate]);
+  }, [loading, isPoliceRole, isPostalRole, isPureCitizen, navigate]);
 
   // Stats state
   const [stats, setStats] = useState<DashboardStats>({
@@ -438,13 +443,15 @@ const UnifiedDashboard = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
         <div className="container mx-auto px-4 py-8">
-          <AddressMapViewer 
-            address={selectedAddress}
-            onBack={() => {
-              setShowMapView(false);
-              setSelectedAddress(null);
-            }}
-          />
+          <MapErrorBoundary>
+            <AddressMapViewer
+              address={selectedAddress}
+              onBack={() => {
+                setShowMapView(false);
+                setSelectedAddress(null);
+              }}
+            />
+          </MapErrorBoundary>
         </div>
       </div>
     );
@@ -876,10 +883,12 @@ const UnifiedDashboard = () => {
                     </CardHeader>
                     <CardContent className="p-0">
                       <div className="min-h-[400px] sm:min-h-[500px] w-full">
-                        <UniversalDashboardLocationMap 
-                          searchedAddress={selectedAddress}
-                          onAddressSearched={setSelectedAddress}
-                        />
+                        <MapErrorBoundary>
+                          <UniversalDashboardLocationMap
+                            searchedAddress={selectedAddress}
+                            onAddressSearched={setSelectedAddress}
+                          />
+                        </MapErrorBoundary>
                       </div>
                     </CardContent>
                   </Card>
@@ -1042,7 +1051,9 @@ const UnifiedDashboard = () => {
       case 'field-map':
         return (
           <div className="max-w-7xl">
-            <UniversalFieldMap />
+            <MapErrorBoundary>
+              <UniversalFieldMap />
+            </MapErrorBoundary>
           </div>
         );
 

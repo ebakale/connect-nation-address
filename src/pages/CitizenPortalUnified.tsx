@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck, 
-  AlertCircle, User, Home, Settings, Users, Bell, Package, Truck
+import {
+  MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck,
+  AlertCircle, User, Home, Settings, Users, Bell, Package, Truck,
+  ArrowRight, Info, Plus
 } from "lucide-react";
 
 // Hooks and Components
@@ -26,12 +27,14 @@ import EmergencyContacts from "@/components/EmergencyContacts";
 import Footer from '@/components/Footer';
 
 // CAR components for personal address management
-import { SetPrimaryAddressForm } from "@/components/SetPrimaryAddressForm";
+import { UnifiedAddressRequestFlow } from "@/components/UnifiedAddressRequestFlow";
 import { SavedLocationsManager } from "@/components/SavedLocationsManager";
 import { AddSecondaryAddressForm } from "@/components/AddSecondaryAddressForm";
 import { AddressPrivacySettings } from "@/components/AddressPrivacySettings";
+import { HouseholdManagement } from "@/components/HouseholdManagement";
 import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
 import { PickupRequestForm, DeliveryPreferencesForm } from "@/components/postal";
+import { MapErrorBoundary } from "@/components/ErrorBoundary";
 
 interface SearchResult {
   uac: string;
@@ -66,7 +69,7 @@ const CitizenPortalUnified = () => {
   const [submitRequestOpen, setSubmitRequestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [verificationRequestsOpen, setVerificationRequestsOpen] = useState(false);
-  const [primaryAddressFormOpen, setPrimaryAddressFormOpen] = useState(false);
+  const [addressFlowOpen, setAddressFlowOpen] = useState(false);
   const [secondaryAddressFormOpen, setSecondaryAddressFormOpen] = useState(false);
   const [pickupRequestOpen, setPickupRequestOpen] = useState(false);
   const [deliveryPreferencesOpen, setDeliveryPreferencesOpen] = useState(false);
@@ -102,13 +105,15 @@ const CitizenPortalUnified = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8">
-          <AddressMapViewer 
-            address={selectedAddress}
-            onBack={() => {
-              setShowMapView(false);
-              setSelectedAddress(null);
-            }}
-          />
+          <MapErrorBoundary>
+            <AddressMapViewer
+              address={selectedAddress}
+              onBack={() => {
+                setShowMapView(false);
+                setSelectedAddress(null);
+              }}
+            />
+          </MapErrorBoundary>
         </div>
       </div>
     );
@@ -173,6 +178,10 @@ const CitizenPortalUnified = () => {
                     <Home className="h-4 w-4 shrink-0" />
                     <span>My Addresses</span>
                   </TabsTrigger>
+                  <TabsTrigger value="household" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Users className="h-4 w-4 shrink-0" />
+                    <span>Household</span>
+                  </TabsTrigger>
                   <TabsTrigger value="saved" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
                     <MapPin className="h-4 w-4 shrink-0" />
                     <span>Saved</span>
@@ -183,11 +192,7 @@ const CitizenPortalUnified = () => {
                   </TabsTrigger>
                   <TabsTrigger value="deliveries" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
                     <Package className="h-4 w-4 shrink-0" />
-                    <span>{t('postal:myDeliveries.title', 'Deliveries')}</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="pickup" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
-                    <Truck className="h-4 w-4 shrink-0" />
-                    <span>{t('postal:pickup.title', 'Pickup')}</span>
+                    <span>Deliveries</span>
                   </TabsTrigger>
                   <TabsTrigger value="privacy" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
                     <Settings className="h-4 w-4 shrink-0" />
@@ -208,63 +213,51 @@ const CitizenPortalUnified = () => {
 
           {/* Public Search Tab */}
           <TabsContent value="public" className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-sm">
-                    <Search className="h-4 w-4 text-primary" />
-                    {t('address:searchAddresses')}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="h-5 w-5 text-primary" />
+                  {t('address:searchAddresses')}
+                </CardTitle>
+                <CardDescription>{t('address:findVerifiedAddresses')}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <AddressSearch
+                  onSelectAddress={(address) => {
+                    setSelectedAddress(address);
+                    setShowMapView(true);
+                  }}
+                  onRegisterAddress={() => {
+                    if (isAuthenticated) {
+                      setAddressFlowOpen(true);
+                    } else {
+                      window.location.href = '/auth';
+                    }
+                  }}
+                />
+              </CardContent>
+            </Card>
+
+            {!isAuthenticated && (
+              <Card className="border-primary/20 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <User className="h-5 w-5 text-primary" />
+                    {t('auth:loginRequired')}
                   </CardTitle>
-                  <CardDescription className="text-xs">
-                    {t('address:findVerifiedAddresses')}
-                  </CardDescription>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-                    <DialogTrigger asChild>
-                      <Button className="w-full">
-                        {t('address:searchDatabase')}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle>{t('address:searchAddresses')}</DialogTitle>
-                        <DialogDescription>
-                          {t('address:findVerifiedAddresses')}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <AddressSearch 
-                        onSelectAddress={(address) => {
-                          setSelectedAddress(address);
-                          setSearchOpen(false);
-                          setShowMapView(true);
-                        }}
-                      />
-                    </DialogContent>
-                  </Dialog>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4 text-sm">
+                    Sign in to manage your personal address, submit registration requests, and track verification status.
+                  </p>
+                  <Button onClick={() => window.location.href = '/auth'} className="w-full sm:w-auto">
+                    <User className="h-4 w-4 mr-2" />
+                    {t('auth:login')}
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
-
-              {!isAuthenticated && (
-                <Card className="col-span-2">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="h-5 w-5 text-primary" />
-                      {t('auth:loginRequired')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      Sign in to access personal address management, submit requests, and track verification status.
-                    </p>
-                    <Button onClick={() => window.location.href = '/auth'} className="w-full">
-                      <User className="h-4 w-4 mr-2" />
-                      {t('auth:login')}
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+            )}
           </TabsContent>
 
           {/* Requests Tab */}
@@ -334,11 +327,12 @@ const CitizenPortalUnified = () => {
                   <CardContent>
                     {primaryAddress ? (
                       <div className="space-y-4">
-                        {/* Address Location Info */}
                         {primaryAddress.street && (
                           <div className="bg-muted/30 p-3 rounded-lg">
                             <div className="space-y-1">
-                              <div className="font-medium text-sm flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> Address Location</div>
+                              <div className="font-medium text-sm flex items-center gap-1.5">
+                                <MapPin className="h-3.5 w-3.5 text-primary" /> Address Location
+                              </div>
                               <div className="text-sm">
                                 <div>{primaryAddress.street}</div>
                                 {primaryAddress.building && <div>{primaryAddress.building}</div>}
@@ -348,62 +342,73 @@ const CitizenPortalUnified = () => {
                             </div>
                           </div>
                         )}
-                        
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium">UAC:</span>
-                            <Badge variant="outline" className="font-mono text-xs">
-                              {primaryAddress.uac}
-                            </Badge>
+                            <span className="font-medium text-sm">UAC</span>
+                            <Badge variant="outline" className="font-mono text-xs">{primaryAddress.uac}</Badge>
                           </div>
-                          
                           <div className="flex items-center justify-between">
-                            <span className="font-medium">Kind:</span>
-                            <Badge variant="secondary">
-                              {primaryAddress.address_kind}
-                            </Badge>
+                            <span className="font-medium text-sm">Type</span>
+                            <Badge variant="secondary">{primaryAddress.address_kind}</Badge>
                           </div>
-                          
                           <div className="flex items-center justify-between">
-                            <span className="font-medium">Status:</span>
+                            <span className="font-medium text-sm">Status</span>
                             <Badge variant={primaryAddress.status === 'CONFIRMED' ? 'default' : 'destructive'}>
                               {primaryAddress.status}
                             </Badge>
                           </div>
-                          
                           {primaryAddress.nar_verified !== undefined && (
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">NAR Verified:</span>
+                              <span className="font-medium text-sm">NAR Verified</span>
                               <Badge variant={primaryAddress.nar_verified ? 'default' : 'destructive'}>
                                 {primaryAddress.nar_verified ? 'Yes' : 'No'}
                               </Badge>
                             </div>
                           )}
                         </div>
-                        
-                        <div className="pt-2 border-t space-y-1">
-                          <div className="text-sm text-muted-foreground">
-                            <span className="font-medium">Effective:</span> {primaryAddress.effective_from} to {primaryAddress.effective_to || 'ongoing'}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            <span className="font-medium">Occupant:</span> {primaryAddress.occupant || 'N/A'}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            <span className="font-medium">Source:</span> {primaryAddress.source || 'N/A'}
-                          </div>
+                        <div className="pt-2 border-t space-y-1 text-sm text-muted-foreground">
+                          <div><span className="font-medium text-foreground">Effective:</span> {primaryAddress.effective_from} – {primaryAddress.effective_to || 'ongoing'}</div>
                           {primaryAddress.address_description && (
-                            <div className="text-sm text-muted-foreground">
-                              <span className="font-medium">Description:</span> {primaryAddress.address_description}
-                            </div>
+                            <div><span className="font-medium text-foreground">Notes:</span> {primaryAddress.address_description}</div>
                           )}
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center py-8">
-                        <Home className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground mb-4">No primary address set</p>
-                        <Button onClick={() => setPrimaryAddressFormOpen(true)}>
-                          Set Primary Address
+                      <div className="space-y-4">
+                        {/* Informative empty state explaining the two-step process */}
+                        <div className="rounded-lg border border-dashed border-border p-6 text-center space-y-3">
+                          <Home className="h-10 w-10 text-muted-foreground mx-auto" />
+                          <div>
+                            <p className="font-medium">No primary address set</p>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Your primary address is your official residence on record.
+                            </p>
+                          </div>
+                        </div>
+                        {/* Two-step explanation */}
+                        <div className="rounded-lg bg-muted/40 p-4 space-y-3 text-sm">
+                          <p className="font-medium flex items-center gap-2">
+                            <Info className="h-4 w-4 text-primary" /> How it works
+                          </p>
+                          <div className="space-y-2 text-muted-foreground">
+                            <div className="flex items-start gap-2">
+                              <span className="font-mono text-primary font-bold shrink-0">1.</span>
+                              <span>Search the National Address Registry (NAR) for your home address.</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-mono text-primary font-bold shrink-0">2a.</span>
+                              <span>If your address is found — declare it as your primary residence.</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="font-mono text-primary font-bold shrink-0">2b.</span>
+                              <span>If your address is <strong>not</strong> in the registry yet — submit a registration request and we'll add it.</span>
+                            </div>
+                          </div>
+                        </div>
+                        <Button className="w-full" onClick={() => setAddressFlowOpen(true)}>
+                          <Search className="h-4 w-4 mr-2" />
+                          Find or Register My Address
+                          <ArrowRight className="h-4 w-4 ml-2" />
                         </Button>
                       </div>
                     )}
@@ -457,6 +462,37 @@ const CitizenPortalUnified = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+          )}
+
+          {/* Household Tab (authenticated only) */}
+          {isAuthenticated && (
+            <TabsContent value="household" className="space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-lg font-semibold">My Household</h2>
+                <p className="text-sm text-muted-foreground">
+                  Manage the people who live at your primary address — family members, dependents, and residents.
+                </p>
+              </div>
+              {primaryAddress ? (
+                <HouseholdManagement />
+              ) : (
+                <Card>
+                  <CardContent className="py-10 text-center space-y-4">
+                    <Users className="h-10 w-10 text-muted-foreground mx-auto" />
+                    <div>
+                      <p className="font-medium">No primary address set</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        You need a primary address before you can declare household members.
+                      </p>
+                    </div>
+                    <Button onClick={() => setActiveTab('addresses')}>
+                      <Home className="h-4 w-4 mr-2" />
+                      Set Up My Address First
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </TabsContent>
           )}
 
@@ -541,51 +577,89 @@ const CitizenPortalUnified = () => {
             </div>
           </TabsContent>
 
-          {/* My Deliveries Tab (authenticated only) */}
+          {/* Deliveries Tab — Incoming + Pickup unified (authenticated only) */}
           {isAuthenticated && (
-            <TabsContent value="deliveries">
-              <CitizenDeliveriesView />
-            </TabsContent>
-          )}
+            <TabsContent value="deliveries" className="space-y-6">
+              <Tabs defaultValue="incoming">
+                <TabsList className="w-full sm:w-auto">
+                  <TabsTrigger value="incoming" className="flex items-center gap-2">
+                    <Package className="h-4 w-4" />
+                    Incoming
+                  </TabsTrigger>
+                  <TabsTrigger value="pickups" className="flex items-center gap-2">
+                    <Truck className="h-4 w-4" />
+                    Pickups
+                  </TabsTrigger>
+                  <TabsTrigger value="preferences" className="flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Preferences
+                  </TabsTrigger>
+                </TabsList>
 
-          {/* Pickup Request Tab (authenticated only) */}
-          {isAuthenticated && (
-            <TabsContent value="pickup" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Truck className="h-5 w-5 text-primary" />
-                    {t('postal:pickup.title', 'Request Pickup')}
-                  </CardTitle>
-                  <CardDescription>
-                    {t('postal:pickup.description', 'Schedule a pickup for your packages')}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button onClick={() => setPickupRequestOpen(true)}>
-                    <Truck className="h-4 w-4 mr-2" />
-                    {t('postal:pickup.requestPickup', 'Request Pickup')}
-                  </Button>
-                  
-                  {primaryAddress && (
-                    <div className="mt-4">
-                      <p className="text-sm text-muted-foreground mb-2">
-                        {t('postal:preferences.managePreferences', 'Manage delivery preferences for your addresses')}
-                      </p>
-                      <Button 
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedAddressForPrefs(primaryAddress.uac);
-                          setDeliveryPreferencesOpen(true);
-                        }}
-                      >
-                        <Settings className="h-4 w-4 mr-2" />
-                        {t('postal:preferences.title', 'Delivery Preferences')}
+                <TabsContent value="incoming" className="mt-4">
+                  <CitizenDeliveriesView />
+                </TabsContent>
+
+                <TabsContent value="pickups" className="mt-4 space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Truck className="h-5 w-5 text-primary" />
+                        {t('postal:pickup.title', 'Request Pickup')}
+                      </CardTitle>
+                      <CardDescription>
+                        {t('postal:pickup.description', 'Schedule a pickup for your packages')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button onClick={() => setPickupRequestOpen(true)}>
+                        <Truck className="h-4 w-4 mr-2" />
+                        {t('postal:pickup.requestPickup', 'Request Pickup')}
                       </Button>
-                    </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="preferences" className="mt-4 space-y-4">
+                  {primaryAddress ? (
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Settings className="h-5 w-5 text-primary" />
+                          {t('postal:preferences.title', 'Delivery Preferences')}
+                        </CardTitle>
+                        <CardDescription>
+                          {t('postal:preferences.managePreferences', 'Manage delivery preferences for your addresses')}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedAddressForPrefs(primaryAddress.uac);
+                            setDeliveryPreferencesOpen(true);
+                          }}
+                        >
+                          <Settings className="h-4 w-4 mr-2" />
+                          {t('postal:preferences.title', 'Manage Preferences')}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <Card>
+                      <CardContent className="py-10 text-center space-y-3">
+                        <Package className="h-10 w-10 text-muted-foreground mx-auto" />
+                        <p className="text-sm text-muted-foreground">
+                          Set a primary address first to manage delivery preferences.
+                        </p>
+                        <Button variant="outline" onClick={() => setActiveTab('addresses')}>
+                          <Home className="h-4 w-4 mr-2" /> Set Up Address
+                        </Button>
+                      </CardContent>
+                    </Card>
                   )}
-                </CardContent>
-              </Card>
+                </TabsContent>
+              </Tabs>
             </TabsContent>
           )}
         </Tabs>
@@ -627,30 +701,26 @@ const CitizenPortalUnified = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Primary Address Form Dialog */}
-        <Dialog open={primaryAddressFormOpen} onOpenChange={setPrimaryAddressFormOpen}>
-          <DialogContent className="max-w-2xl">
+        {/* Unified Address Registration / Declaration Flow */}
+        <Dialog open={addressFlowOpen} onOpenChange={setAddressFlowOpen}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Set Primary Address</DialogTitle>
+              <DialogTitle className="flex items-center gap-2">
+                <Home className="h-5 w-5 text-primary" />
+                Find or Register Your Address
+              </DialogTitle>
               <DialogDescription>
-                Choose your primary residence address from the NAR database
+                Search the national registry for your address. If it's not there yet, you can submit a registration request in the same flow.
               </DialogDescription>
             </DialogHeader>
-            <SetPrimaryAddressForm 
-              onSuccess={() => {
-                setPrimaryAddressFormOpen(false);
+            <UnifiedAddressRequestFlow
+              initialMode="citizen"
+              onComplete={() => {
+                setAddressFlowOpen(false);
                 fetchAddresses();
               }}
+              onCancel={() => setAddressFlowOpen(false)}
             />
-            <div className="flex gap-2 mt-4">
-              <Button 
-                variant="outline" 
-                onClick={() => setPrimaryAddressFormOpen(false)}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
           </DialogContent>
         </Dialog>
 

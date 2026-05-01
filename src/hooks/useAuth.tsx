@@ -9,6 +9,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  /** True when auth is resolved and a user is signed in. Convenience alias for `!loading && !!user`. */
+  isAuthenticated: boolean;
   signUp: (email: string, password: string, firstName: string, lastName: string, phoneNumber: string, nationalIdType: string, nationalId: string, dateOfBirth: string, nationality: string, preferredLanguage: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -159,6 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       user,
       session,
       loading,
+      isAuthenticated: !loading && !!user,
       signUp,
       signIn,
       signOut,

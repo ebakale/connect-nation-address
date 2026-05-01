@@ -1,6 +1,17 @@
 // IndexedDB wrapper for offline data storage
-export interface OfflineAddress {
+
+/** Shared contract every offline write operation must satisfy. */
+export interface OfflineOperation {
   id: string;
+  created_at: string;
+  synced: boolean;
+  /** ISO timestamp of the last sync attempt, null if never attempted. */
+  last_sync_attempt?: string | null;
+  /** Number of consecutive sync failures. */
+  sync_retry_count?: number;
+}
+
+export interface OfflineAddress extends OfflineOperation {
   user_id: string;
   latitude: number;
   longitude: number;
@@ -11,13 +22,13 @@ export interface OfflineAddress {
   building?: string;
   address_type: string;
   description?: string;
+  /** Data URI or object URL for photo evidence — stored in IndexedDB, not localStorage. */
+  photo_data?: string;
+  /** @deprecated Use photo_data instead */
   photo_url?: string;
-  created_at: string;
-  synced: boolean;
 }
 
-export interface OfflineIncident {
-  id: string;
+export interface OfflineIncident extends OfflineOperation {
   incident_number: string;
   description: string;
   priority: string;
@@ -25,8 +36,6 @@ export interface OfflineIncident {
   latitude?: number;
   longitude?: number;
   address?: string;
-  created_at: string;
-  synced: boolean;
 }
 
 export interface OfflineUser {
@@ -53,8 +62,7 @@ export interface LocalUser {
   last_login: string;
 }
 
-export interface OfflinePoliceIncident {
-  id: string;
+export interface OfflinePoliceIncident extends OfflineOperation {
   type: string;
   status: 'pending' | 'in_progress' | 'resolved' | 'cancelled';
   priority: 'low' | 'medium' | 'high' | 'critical';
@@ -66,9 +74,7 @@ export interface OfflinePoliceIncident {
   };
   reported_by: string;
   assigned_units?: string[];
-  created_at: string;
   updated_at: string;
-  synced: boolean;
 }
 
 export interface OfflineUnit {
@@ -87,7 +93,7 @@ export interface OfflineUnit {
 
 class OfflineStorage {
   private dbName = 'ConnectNationOffline';
-  private version = 2;
+  private version = 3;
   private db: IDBDatabase | null = null;
 
   async init(): Promise<void> {
@@ -102,6 +108,16 @@ class OfflineStorage {
 
       request.onupgradeneeded = (event) => {
         const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = (event.target as IDBOpenDBRequest).transaction!;
+        const oldVersion = event.oldVersion;
+
+        // v3 migration: add synced index to existing policeIncidents store
+        if (oldVersion < 3 && db.objectStoreNames.contains('policeIncidents')) {
+          const store = transaction.objectStore('policeIncidents');
+          if (!store.indexNames.contains('synced')) {
+            store.createIndex('synced', 'synced', { unique: false });
+          }
+        }
 
         // Create addresses store
         if (!db.objectStoreNames.contains('addresses')) {
@@ -136,7 +152,8 @@ class OfflineStorage {
         }
 
         if (!db.objectStoreNames.contains('policeIncidents')) {
-          db.createObjectStore('policeIncidents', { keyPath: 'id' });
+          const policeStore = db.createObjectStore('policeIncidents', { keyPath: 'id' });
+          policeStore.createIndex('synced', 'synced', { unique: false });
         }
 
         if (!db.objectStoreNames.contains('units')) {
@@ -422,21 +439,8 @@ class OfflineStorage {
   async getUnsyncedPoliceIncidents(): Promise<OfflinePoliceIncident[]> {
     const store = await this.getStore('policeIncidents');
     return new Promise((resolve, reject) => {
-      const request = store.openCursor();
-      const unsynced: OfflinePoliceIncident[] = [];
-
-      request.onsuccess = (event) => {
-        const cursor = (event.target as IDBRequest<IDBCursorWithValue>).result;
-        if (cursor) {
-          if (!cursor.value.synced) {
-            unsynced.push(cursor.value);
-          }
-          cursor.continue();
-        } else {
-          resolve(unsynced);
-        }
-      };
-
+      const request = store.index('synced').getAll(IDBKeyRange.only(false));
+      request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
   }

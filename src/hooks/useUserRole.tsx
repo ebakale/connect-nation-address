@@ -454,6 +454,37 @@ export const useUserRole = () => {
     // Scope functions
     getGeographicScope,
     getOrganizationScope,
-    hasScope
+    hasScope,
+
+    // Intent-based capabilities — prefer these over raw role checks in UI components.
+    // "What can I do?" rather than "What role am I?"
+    capabilities: {
+      // Address registry
+      manageAddresses:        hasAdminAccess || isVerifier || isRegistrar || isNARAuthority,
+      captureAddresses:       isFieldAgent || hasAdminAccess,
+      verifyAddresses:        canVerifyNAR || canVerifyAddresses || isNARAuthority,
+      publishAddresses:       canPublishAddresses || isNARAuthority,
+      searchAddresses:        canSearchVerifiedAddresses,
+
+      // Citizen address repository
+      manageCitizenAddresses: isCARAdmin || isRegistrar || isResidencyVerifier || hasAdminAccess,
+      verifyResidency:        isResidencyVerifier || isCARAdmin || isRegistrar,
+      viewHousehold:          isCitizen || isResidencyVerifier || isCARAdmin,
+
+      // Postal
+      dispatchDeliveries:     isPostalDispatcher || isPostalSupervisor,
+      manageDeliveries:       isPostalClerk || isPostalAgent || isPostalDispatcher || isPostalSupervisor,
+      trackDeliveries:        isCitizen || isPostalRole,
+
+      // Emergency / Police
+      viewIncidents:          isPoliceRole || hasAdminAccess,
+      dispatchUnits:          isPoliceDispatcher || isPoliceAdmin || isPoliceSupervisor,
+      manageUnits:            isPoliceAdmin || isPoliceSupervisor,
+
+      // System
+      manageUsers:            isAdmin || hasNDAAAccess,
+      viewAnalytics:          hasAdminAccess || isNARAuthority,
+      manageSystem:           isAdmin || hasNDAAAccess || hasSystemAdminAccess,
+    }
   };
 };

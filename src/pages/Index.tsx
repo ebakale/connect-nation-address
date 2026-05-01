@@ -1,19 +1,22 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck, Target, Eye, Building, QrCode, Ambulance, Mail, LayoutDashboard, Clock, ArrowRight, Fingerprint, AlertTriangle, Info, Phone } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck, Target, Eye, Building, QrCode, Ambulance, Mail, LayoutDashboard, Clock, ArrowRight, Fingerprint, AlertTriangle, Info, Phone, Loader2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { ValuePropositionPDF } from '@/components/ValuePropositionPDF';
-import StoryboardsPDF from '@/components/StoryboardsPDF';
-import BusinessModelCanvasPDF from '@/components/BusinessModelCanvasPDF';
-import BusinessModelCanvasPDFEnglish from '@/components/BusinessModelCanvasPDFEnglish';
-import FinancialAnalysisPDF from '@/components/FinancialAnalysisPDF';
-import FinancialAnalysisPDFEnglish from '@/components/FinancialAnalysisPDFEnglish';
-import ProcessFlowDiagramPDF from '@/components/ProcessFlowDiagramPDF';
-import ProcessFlowDiagramPDFEnglish from '@/components/ProcessFlowDiagramPDFEnglish';
-import FunctionalitiesObjectivesPDF from '@/components/FunctionalitiesObjectivesPDF';
+
+// PDF generators are lazy-loaded — they pull in jspdf + html2canvas (~1MB) and are
+// only needed when the user navigates to the Help/Documentation section.
+const ValuePropositionPDF     = lazy(() => import('@/components/ValuePropositionPDF').then(m => ({ default: m.ValuePropositionPDF })));
+const StoryboardsPDF          = lazy(() => import('@/components/StoryboardsPDF'));
+const BusinessModelCanvasPDF  = lazy(() => import('@/components/BusinessModelCanvasPDF'));
+const BusinessModelCanvasPDFEnglish = lazy(() => import('@/components/BusinessModelCanvasPDFEnglish'));
+const FinancialAnalysisPDF    = lazy(() => import('@/components/FinancialAnalysisPDF'));
+const FinancialAnalysisPDFEnglish   = lazy(() => import('@/components/FinancialAnalysisPDFEnglish'));
+const ProcessFlowDiagramPDF   = lazy(() => import('@/components/ProcessFlowDiagramPDF'));
+const ProcessFlowDiagramPDFEnglish  = lazy(() => import('@/components/ProcessFlowDiagramPDFEnglish'));
+const FunctionalitiesObjectivesPDF  = lazy(() => import('@/components/FunctionalitiesObjectivesPDF'));
 import { useAuth } from '@/hooks/useAuth';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +32,7 @@ import EmergencyAlertProcessor from '@/components/EmergencyAlertProcessor';
 import { PublicAccessPortal } from '@/components/PublicAccessPortal';
 import { BreadcrumbNavigation } from '@/components/BreadcrumbNavigation';
 import { SectionTransition } from '@/components/SectionTransition';
+import { PDFErrorBoundary } from '@/components/ErrorBoundary';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -756,15 +760,19 @@ const Index = () => {
                     Download our comprehensive value proposition document with detailed analysis and infographics
                   </p>
                 </div>
-              <ValuePropositionPDF />
-              <StoryboardsPDF />
-            <BusinessModelCanvasPDF />
+              <PDFErrorBoundary>
+                <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
+                  <ValuePropositionPDF />
+                  <StoryboardsPDF />
+                  <BusinessModelCanvasPDF />
                   <BusinessModelCanvasPDFEnglish />
                   <FinancialAnalysisPDF />
                   <FinancialAnalysisPDFEnglish />
                   <ProcessFlowDiagramPDF />
                   <ProcessFlowDiagramPDFEnglish />
                   <FunctionalitiesObjectivesPDF />
+                </Suspense>
+              </PDFErrorBoundary>
               </div>
             </div>
           </div>

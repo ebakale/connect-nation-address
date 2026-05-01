@@ -42,6 +42,7 @@ import { EnhancedSyncStatus } from '@/components/EnhancedSyncStatus';
 import { UnitLeadershipDashboard } from '@/components/UnitLeadershipDashboard';
 import { UnitPerformanceAnalytics } from '@/components/UnitPerformanceAnalytics';
 import { toast } from "sonner";
+import { MapErrorBoundary } from "@/components/ErrorBoundary";
 
 interface EmergencyIncident {
   id: string;
@@ -996,11 +997,13 @@ const PoliceDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="h-96 rounded-lg overflow-hidden">
-                        <IncidentMap 
-                          incidents={incidents} 
-                          selectedIncident={selectedIncident}
-                          onSelectIncident={(incident) => setSelectedIncident(incident)}
-                        />
+                        <MapErrorBoundary>
+                          <IncidentMap
+                            incidents={incidents}
+                            selectedIncident={selectedIncident}
+                            onSelectIncident={(incident) => setSelectedIncident(incident)}
+                          />
+                        </MapErrorBoundary>
                       </div>
                     </CardContent>
                   </Card>
