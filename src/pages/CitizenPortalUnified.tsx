@@ -25,6 +25,7 @@ import { ReporterNotifications } from "@/components/ReporterNotifications";
 import { UserVerificationRequests } from "@/components/UserVerificationRequests";
 import EmergencyContacts from "@/components/EmergencyContacts";
 import Footer from '@/components/Footer';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 // CAR components for personal address management
 import { UnifiedAddressRequestFlow } from "@/components/UnifiedAddressRequestFlow";
