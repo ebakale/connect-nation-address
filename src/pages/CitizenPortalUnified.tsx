@@ -542,6 +542,13 @@ const CitizenPortalUnified = () => {
             </TabsContent>
           )}
 
+          {/* My Businesses Tab */}
+          {isAuthenticated && (
+            <TabsContent value="businesses" className="space-y-6">
+              <CitizenBusinessesTab onRequestNewBusiness={() => setAddressFlowOpen(true)} />
+            </TabsContent>
+          )}
+
           {/* Emergency Tab */}
           <TabsContent value="emergency" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
