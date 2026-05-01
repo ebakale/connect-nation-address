@@ -36,6 +36,9 @@ import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 import { EmptyState } from "@/components/ui/empty-state";
 
 type OrganizationAddress = Database["public"]["Tables"]["organization_addresses"]["Row"] & {
+  phone?: string;
+  email?: string;
+  website?: string;
   addresses?: {
     uac: string;
     street: string;
