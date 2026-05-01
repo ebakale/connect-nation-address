@@ -195,7 +195,7 @@ export default function MyBusinesses() {
     
     if (status === 'active') {
       return (
-        <Badge variant="default" className="flex items-center gap-1 bg-green-600">
+        <Badge variant="default" className="flex items-center gap-1 bg-success">
           <CheckCircle className="h-3 w-3" />
           {t('business:dashboard.active')}
         </Badge>
@@ -281,9 +281,9 @@ export default function MyBusinesses() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{t('business:dashboard.active')}</p>
-                <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                <p className="text-2xl font-bold text-success">{stats.active}</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-success" />
             </div>
           </Card>
           
@@ -291,9 +291,9 @@ export default function MyBusinesses() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">{t('business:dashboard.verified')}</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.verified}</p>
+                <p className="text-2xl font-bold text-info">{stats.verified}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-blue-600" />
+              <CheckCircle className="h-8 w-8 text-info" />
             </div>
           </Card>
           
@@ -330,7 +330,7 @@ export default function MyBusinesses() {
                 open={isExpanded} 
                 onOpenChange={() => toggleCard(business.id)}
               >
-                <Card className={`overflow-hidden transition-shadow ${business.addresses?.verified ? 'border-l-4 border-l-green-500' : ''}`}>
+                <Card className={`overflow-hidden transition-shadow ${business.addresses?.verified ? 'border-l-4 border-l-success' : ''}`}>
                   {/* Header - Always Visible */}
                   <CollapsibleTrigger asChild>
                     <div className="p-4 cursor-pointer hover:bg-muted/50 transition-colors">

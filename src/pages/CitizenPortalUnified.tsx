@@ -88,8 +88,11 @@ const CitizenPortalUnified = () => {
 
   if (roleLoading || carLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5 flex items-center justify-center">
-        <div className="text-lg animate-fade-in">{t('common:buttons.loading')}</div>
+      <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 animate-fade-in">
+          <div className="h-10 w-10 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">{t('common:buttons.loading')}</p>
+        </div>
       </div>
     );
   }
@@ -97,7 +100,7 @@ const CitizenPortalUnified = () => {
   // If showing map view for selected address
   if (showMapView && selectedAddress) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5">
+      <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
         <div className="container mx-auto px-4 py-8">
           <AddressMapViewer 
             address={selectedAddress}
@@ -112,7 +115,7 @@ const CitizenPortalUnified = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-secondary/5 to-destructive/5">
+    <div className="min-h-screen bg-gradient-to-br from-primary/8 via-background to-secondary/5">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -154,52 +157,54 @@ const CitizenPortalUnified = () => {
 
         {/* Main Content Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-            <TabsTrigger value="public" className="flex items-center gap-2">
-              <Search className="h-4 w-4" />
-              <span className="hidden sm:inline">Search</span>
-            </TabsTrigger>
-            <TabsTrigger value="requests" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Requests</span>
-            </TabsTrigger>
-            {isAuthenticated && (
-              <>
-                <TabsTrigger value="addresses" className="flex items-center gap-2">
-                  <Home className="h-4 w-4" />
-                  <span className="hidden sm:inline">My Addresses</span>
-                </TabsTrigger>
-                <TabsTrigger value="privacy" className="flex items-center gap-2">
-                  <Settings className="h-4 w-4" />
-                  <span className="hidden sm:inline">Privacy</span>
-                </TabsTrigger>
-                <TabsTrigger value="saved" className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  <span className="hidden sm:inline">Saved</span>
-                </TabsTrigger>
-                <TabsTrigger value="verification" className="flex items-center gap-2">
-                  <FileCheck className="h-4 w-4" />
-                  <span className="hidden sm:inline">Verification</span>
-                </TabsTrigger>
-                <TabsTrigger value="deliveries" className="flex items-center gap-2">
-                  <Package className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('postal:myDeliveries.title', 'Deliveries')}</span>
-                </TabsTrigger>
-                <TabsTrigger value="pickup" className="flex items-center gap-2">
-                  <Truck className="h-4 w-4" />
-                  <span className="hidden sm:inline">{t('postal:pickup.title', 'Pickup')}</span>
-                </TabsTrigger>
-                <TabsTrigger value="notifications" className="flex items-center gap-2">
-                  <Bell className="h-4 w-4" />
-                  <span className="hidden sm:inline">Alerts</span>
-                </TabsTrigger>
-              </>
-            )}
-            <TabsTrigger value="emergency" className="flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              <span className="hidden sm:inline">Emergency</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-3 lg:grid-cols-4 h-auto p-1 gap-1">
+              <TabsTrigger value="public" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                <Search className="h-4 w-4 shrink-0" />
+                <span>Search</span>
+              </TabsTrigger>
+              <TabsTrigger value="requests" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                <FileText className="h-4 w-4 shrink-0" />
+                <span>Requests</span>
+              </TabsTrigger>
+              {isAuthenticated && (
+                <>
+                  <TabsTrigger value="addresses" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Home className="h-4 w-4 shrink-0" />
+                    <span>My Addresses</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="saved" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <MapPin className="h-4 w-4 shrink-0" />
+                    <span>Saved</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="verification" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <FileCheck className="h-4 w-4 shrink-0" />
+                    <span>Verification</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="deliveries" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Package className="h-4 w-4 shrink-0" />
+                    <span>{t('postal:myDeliveries.title', 'Deliveries')}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="pickup" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Truck className="h-4 w-4 shrink-0" />
+                    <span>{t('postal:pickup.title', 'Pickup')}</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="privacy" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Settings className="h-4 w-4 shrink-0" />
+                    <span>Privacy</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="notifications" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap">
+                    <Bell className="h-4 w-4 shrink-0" />
+                    <span>Alerts</span>
+                  </TabsTrigger>
+                </>
+              )}
+              <TabsTrigger value="emergency" className="flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap text-destructive data-[state=active]:bg-destructive data-[state=active]:text-destructive-foreground">
+                <Phone className="h-4 w-4 shrink-0" />
+                <span>Emergency</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Public Search Tab */}
           <TabsContent value="public" className="space-y-6">
@@ -333,7 +338,7 @@ const CitizenPortalUnified = () => {
                         {primaryAddress.street && (
                           <div className="bg-muted/30 p-3 rounded-lg">
                             <div className="space-y-1">
-                              <div className="font-medium text-sm">📍 Address Location</div>
+                              <div className="font-medium text-sm flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> Address Location</div>
                               <div className="text-sm">
                                 <div>{primaryAddress.street}</div>
                                 {primaryAddress.building && <div>{primaryAddress.building}</div>}
@@ -520,7 +525,7 @@ const CitizenPortalUnified = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-amber-500" />
+                    <AlertCircle className="h-5 w-5 text-warning" />
                     {t('common:importantInformation')}
                   </CardTitle>
                 </CardHeader>

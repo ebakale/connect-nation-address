@@ -385,13 +385,13 @@ const Documentation: React.FC = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="bg-green-500/10 border border-green-500/20 p-4 rounded-lg mt-4">
+                  <div className="bg-success/10 border border-success/20 p-4 rounded-lg mt-4">
                     <p className="text-sm"><strong>✓ TIERED APPROVAL:</strong> Dispatchers can acknowledge and escalate requests. Only Supervisors and Admins have authority to approve, deny, or modify priority of backup requests.</p>
                   </div>
                   <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-lg mt-4">
                     <p className="text-sm"><strong>🚨 OFFICER DOWN:</strong> This critical feature bypasses normal workflow. When activated, it immediately broadcasts to ALL police personnel (operators, supervisors, dispatchers, admins) regardless of geographic scope, ensuring maximum response.</p>
                   </div>
-                  <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg mt-4">
+                  <div className="bg-warning/10 border border-warning/20 p-4 rounded-lg mt-4">
                     <p className="text-sm"><strong>⬆️ ESCALATION:</strong> When dispatchers escalate a request, all supervisors receive notification with the dispatcher's notes. Status changes to "Escalated" until supervisor takes action.</p>
                   </div>
                   <div className="bg-muted p-4 rounded-lg mt-4">

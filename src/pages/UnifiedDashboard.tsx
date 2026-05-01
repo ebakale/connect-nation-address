@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -8,10 +9,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { 
+import {
   Shield, Users, Settings, BarChart3, LogOut, Search, FileText, Clock, AlertCircle,
   Camera, CheckCircle, TrendingUp, Target, MapPin, AlertTriangle, Crown, Globe, FileCheck, Map, User, Phone,
-  Database, Network, Home, Building2, Plus, Package, Sparkles
+  Database, Network, Home, Building2, Plus, Package, Sparkles, MoreHorizontal
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import Footer from '@/components/Footer';
@@ -424,7 +425,10 @@ const UnifiedDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex items-center justify-center">
-        <div className="text-lg">{t('common:buttons.loading')}</div>
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+          <p className="text-sm text-muted-foreground">{t('common:buttons.loading')}</p>
+        </div>
       </div>
     );
   }
@@ -584,24 +588,24 @@ const UnifiedDashboard = () => {
                     </CardContent>
                   </Card>
 
-                  <Card className="border-l-4 border-l-amber-500">
+                  <Card className="border-l-4 border-l-warning">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:pendingVerifications')}</CardTitle>
-                      <Clock className="h-4 w-4 text-amber-600" />
+                      <Clock className="h-4 w-4 text-warning" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-amber-600">{unifiedStats.pendingCARVerifications + unifiedStats.pendingResidencyVerifications}</div>
+                      <div className="text-2xl font-bold text-warning">{unifiedStats.pendingCARVerifications + unifiedStats.pendingResidencyVerifications}</div>
                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:requiresReview')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card className="border-l-4 border-l-emerald-500">
+                  <Card className="border-l-4 border-l-success">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:integrationStatus')}</CardTitle>
-                      <Network className="h-4 w-4 text-emerald-600" />
+                      <Network className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-emerald-600">{t('dashboard:active')}</div>
+                      <div className="text-2xl font-bold text-success">{t('dashboard:active')}</div>
                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:narCarSync')}</p>
                     </CardContent>
                   </Card>
@@ -759,24 +763,24 @@ const UnifiedDashboard = () => {
             {isCarAdmin && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Card className="border-l-4 border-l-emerald-500">
+                  <Card className="border-l-4 border-l-success">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:confirmedAddresses')}</CardTitle>
-                      <CheckCircle className="h-4 w-4 text-emerald-600" />
+                      <CheckCircle className="h-4 w-4 text-success" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-emerald-600">{unifiedStats.totalCARAddresses}</div>
+                      <div className="text-2xl font-bold text-success">{unifiedStats.totalCARAddresses}</div>
                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:verifiedCitizen')}</p>
                     </CardContent>
                   </Card>
 
-                  <Card className="border-l-4 border-l-amber-500">
+                  <Card className="border-l-4 border-l-warning">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:pendingAddresses')}</CardTitle>
-                      <Clock className="h-4 w-4 text-amber-600" />
+                      <Clock className="h-4 w-4 text-warning" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-amber-600">{unifiedStats.pendingCARVerifications}</div>
+                      <div className="text-2xl font-bold text-warning">{unifiedStats.pendingCARVerifications}</div>
                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:awaitingYourReview')}</p>
                     </CardContent>
                   </Card>
@@ -784,10 +788,10 @@ const UnifiedDashboard = () => {
                   <Card className="border-l-4 border-l-blue-500">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">{t('dashboard:residencyVerifications')}</CardTitle>
-                      <Shield className="h-4 w-4 text-blue-600" />
+                      <Shield className="h-4 w-4 text-info" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold text-blue-600">{unifiedStats.pendingResidencyVerifications}</div>
+                      <div className="text-2xl font-bold text-info">{unifiedStats.pendingResidencyVerifications}</div>
                       <p className="text-xs text-muted-foreground mt-1">{t('dashboard:pendingDocuments')}</p>
                     </CardContent>
                   </Card>
@@ -1367,13 +1371,18 @@ const UnifiedDashboard = () => {
 
               {/* Right: Actions */}
               <div className="flex items-center gap-1 shrink-0">
+                {/* Always visible: notifications + theme */}
                 <NotificationCenter />
-                <OfflineSyncQueue />
                 <ThemeToggle />
-                <div className="hidden md:block">
+
+                {/* Visible on md+: language switcher + offline sync */}
+                <div className="hidden md:flex items-center gap-1">
+                  <OfflineSyncQueue />
+                  <OfflineIndicator />
                   <LanguageSwitcher />
                 </div>
-                <OfflineIndicator />
+
+                {/* User name — visible on lg+ */}
                 {userProfile && (
                   <div className="text-right hidden lg:block ml-1">
                     <p className="text-xs font-medium whitespace-nowrap truncate max-w-[120px]">{userProfile.full_name}</p>
@@ -1387,11 +1396,56 @@ const UnifiedDashboard = () => {
                     </div>
                   </div>
                 )}
-                <Button 
-                  variant="ghost" 
+
+                {/* Overflow menu — visible on < md */}
+                <div className="md:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-52">
+                      {userProfile && (
+                        <>
+                          <DropdownMenuLabel className="font-normal">
+                            <p className="text-sm font-medium truncate">{userProfile.full_name}</p>
+                            <p className="text-xs text-muted-foreground truncate">{userProfile.email}</p>
+                          </DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                        </>
+                      )}
+                      <DropdownMenuItem asChild>
+                        <div className="flex items-center gap-2 cursor-pointer">
+                          <OfflineSyncQueue />
+                          <span className="text-sm">Sync Queue</span>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <div className="flex items-center gap-2 cursor-pointer">
+                          <OfflineIndicator />
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <div className="cursor-pointer">
+                          <LanguageSwitcher />
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={signOut} className="text-destructive focus:text-destructive">
+                        <LogOut className="h-4 w-4 mr-2" />
+                        {t('navigation.logout', { ns: 'common' })}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Logout — always visible on md+ */}
+                <Button
+                  variant="ghost"
                   size="icon"
-                  onClick={signOut} 
-                  className="h-8 w-8 shrink-0"
+                  onClick={signOut}
+                  className="hidden md:flex h-8 w-8 shrink-0"
                   aria-label={t('navigation.logout', { ns: 'common' })}
                   title={t('navigation.logout', { ns: 'common' })}
                 >

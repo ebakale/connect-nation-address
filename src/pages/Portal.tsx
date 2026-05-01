@@ -103,7 +103,7 @@ const Portal = () => {
 
   const getHealthColor = (health: string) => {
     switch (health) {
-      case 'good': return 'bg-green-500';
+      case 'good': return 'bg-success';
       case 'warning': return 'bg-yellow-500';
       case 'critical': return 'bg-red-500';
       default: return 'bg-gray-500';
@@ -217,7 +217,7 @@ const Portal = () => {
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{metrics.onlineUnits}</div>
+              <div className="text-2xl font-bold text-success">{metrics.onlineUnits}</div>
             </CardContent>
           </Card>
 
@@ -348,7 +348,7 @@ const Portal = () => {
                   <div key={activity.id} className="flex items-start space-x-3">
                     <div className={`w-2 h-2 rounded-full mt-2 ${
                       activity.type === 'incident' ? 'bg-red-500' :
-                      activity.type === 'address' ? 'bg-blue-500' : 'bg-green-500'
+                      activity.type === 'address' ? 'bg-blue-500' : 'bg-success'
                     }`}></div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground">{activity.message}</p>

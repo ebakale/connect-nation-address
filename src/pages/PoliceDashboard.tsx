@@ -649,7 +649,7 @@ const PoliceDashboard = () => {
            <div className="flex items-center justify-between">
              <div className="flex items-center gap-4">
                <div className="flex items-center gap-2">
-                 <Shield className="h-8 w-8 text-blue-600" />
+                 <Shield className="h-8 w-8 text-info" />
                  <div>
                     <h1 className="text-2xl font-bold">{t('policeCommandCenter')}</h1>
                     <p className="text-sm text-muted-foreground">{t('emergencyIncidents')}</p>
@@ -877,15 +877,15 @@ const PoliceDashboard = () => {
                     <p className="text-xs text-muted-foreground">{t('active')}</p>
                   </div>
                 </Card>
-                <Card className="p-3 sm:p-4 border-l-4 border-l-emerald-500">
+                <Card className="p-3 sm:p-4 border-l-4 border-l-success">
                   <div className="text-center">
-                    <p className="text-lg sm:text-2xl font-bold text-emerald-600">{dashboardStats.availableUnits}</p>
+                    <p className="text-lg sm:text-2xl font-bold text-success">{dashboardStats.availableUnits}</p>
                     <p className="text-xs text-muted-foreground">{t('units')}</p>
                   </div>
                 </Card>
                 <Card className="p-3 sm:p-4 border-l-4 border-l-blue-500">
                   <div className="text-center">
-                    <p className="text-lg sm:text-2xl font-bold text-blue-600">{dashboardStats.avgResponseTime}m</p>
+                    <p className="text-lg sm:text-2xl font-bold text-info">{dashboardStats.avgResponseTime}m</p>
                     <p className="text-xs text-muted-foreground">{t('response')}</p>
                   </div>
                 </Card>
@@ -1140,9 +1140,9 @@ const PoliceDashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
                         <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('availableUnits')}</p>
-                        <p className="text-xl sm:text-2xl font-bold text-green-600 mt-1">{dashboardStats.availableUnits}</p>
+                        <p className="text-xl sm:text-2xl font-bold text-success mt-1">{dashboardStats.availableUnits}</p>
                       </div>
-                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0 ml-2" />
+                      <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-success flex-shrink-0 ml-2" />
                     </div>
                   </CardContent>
                 </Card>
@@ -1152,9 +1152,9 @@ const PoliceDashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="min-w-0 flex-1">
                         <p className="text-xs sm:text-sm text-muted-foreground truncate">{t('avgResponseTime')}</p>
-                        <p className="text-xl sm:text-2xl font-bold text-blue-600 mt-1">{dashboardStats.avgResponseTime}m</p>
+                        <p className="text-xl sm:text-2xl font-bold text-info mt-1">{dashboardStats.avgResponseTime}m</p>
                       </div>
-                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0 ml-2" />
+                      <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-info flex-shrink-0 ml-2" />
                     </div>
                   </CardContent>
                 </Card>
@@ -1360,11 +1360,11 @@ const PoliceDashboard = () => {
                           <p className="text-sm text-muted-foreground mt-1">{t('totalIncidents')}</p>
                         </div>
                         <div className="text-center p-4 bg-muted/50 rounded-lg">
-                          <p className="text-2xl font-bold text-green-600">{dashboardStats.resolvedIncidents}</p>
+                          <p className="text-2xl font-bold text-success">{dashboardStats.resolvedIncidents}</p>
                           <p className="text-sm text-muted-foreground mt-1">{t('resolved')}</p>
                         </div>
                         <div className="text-center p-4 bg-muted/50 rounded-lg col-span-2">
-                          <p className="text-xl font-bold text-blue-600">
+                          <p className="text-xl font-bold text-info">
                             {dashboardStats.totalIncidents > 0 
                               ? ((dashboardStats.resolvedIncidents / dashboardStats.totalIncidents) * 100).toFixed(1)
                               : 0}%
