@@ -1,61 +1,50 @@
 
-# Mobile-First UX Improvements — Phase 2
+# ConEG Promotional Video
 
-The previous round already delivered the biggest win: replacing the sidebar with a bottom tab bar and compact header for the citizen portal. This phase addresses the remaining issues from the assessment.
+A 25-second motion graphics video (1920x1080, 30fps) presenting ConEG's platform to potential government clients. Rendered to MP4 via Remotion.
 
-## What's already done (no changes needed)
-- Bottom tab bar navigation for citizen portal (5 sections)
-- Compact 48px header with `MobileHeader` component
-- Admin/operator layouts kept desktop-oriented (correct — those are tablet/desktop tools)
-- Section-based grouping instead of 12 horizontal tabs
+## Creative Direction
 
-## What this plan addresses
+- **Style**: Cinematic Government Tech — clean, authoritative, trustworthy
+- **Palette**: Navy blue (#0A2D6B), gold accent (#D4A853), white text, dark gradient backgrounds
+- **Typography**: Inter (body) + Poppins (headings) via `@remotion/google-fonts`
+- **Motion**: Smooth spring reveals, slide-up entrances, fade transitions between scenes
+- **Motifs**: Map pin icons, shield/security elements, geometric grid patterns
 
-### 1. Full-screen dialogs on mobile
+## 5 Scenes (750 frames total at 30fps = 25 seconds)
 
-Currently, complex flows (address registration, request submission, verification) open inside centered `Dialog` modals with `max-w-4xl max-h-[85vh] overflow-y-auto`. On a 375px screen this creates a scrollable box inside a scrollable page — confusing and cramped.
+### Scene 1 — Opening Hook (0-150 frames, 5s)
+"Every address. Every emergency. Every delivery." typed out with the ConEG logo reveal. Navy background with subtle animated grid. Establishes authority.
 
-**Fix**: Update the `DialogContent` component to go full-screen on mobile (`sm:` breakpoint and below). On desktop it stays a centered modal. This is a single change in `src/components/ui/dialog.tsx` that fixes all 5 dialogs at once.
+### Scene 2 — The Problem (150-300 frames, 5s)
+Stats panel: "No standardized postal system", "Emergency delays +15-30 min", "Citizens without formal addresses". Red accent for urgency, items stagger in.
 
-Mobile behavior: `fixed inset-0 w-full h-full rounded-none`
-Desktop behavior: unchanged (centered, max-width, rounded)
+### Scene 3 — Three Pillars (300-480 frames, 6s)
+Three cards slide in showing the modules:
+- National Address Registry (NAR/CAR)
+- Emergency Management (112 Dispatch)
+- Postal & Logistics Service
+Each with an icon and 1-line description.
 
-### 2. Better bottom nav labels
+### Scene 4 — Key Features (480-630 frames, 5s)
+Animated feature list: UAC codes, GPS verification, multilingual (ES/FR), offline capability, government-grade security. Items fly in with spring physics.
 
-The current labels (Home / Search / Services / Alerts / Profile) are generic. The assessment suggests labels that match what citizens actually do:
+### Scene 5 — Closing (630-750 frames, 4s)
+Logo + tagline: "ConEG — Connecting Equatorial Guinea". Gold accent line expands. Contact/branding fade in.
 
-**Change to**: Home / Search / Deliveries / Household / More
+## Technical Plan
 
-- **Home** — Primary/secondary addresses (the core)
-- **Search** — Public address lookup
-- **Deliveries** — Incoming packages, pickups, preferences (high-frequency for postal users)
-- **Household** — Household members management
-- **More** — Requests, Verification, Businesses, Privacy, Emergency, Sign Out (overflow menu)
+| File | Purpose |
+|------|---------|
+| `remotion/tsconfig.json` | TypeScript config |
+| `remotion/src/index.ts` | Entry point with registerRoot |
+| `remotion/src/Root.tsx` | Composition registration (750 frames, 30fps, 1920x1080) |
+| `remotion/src/MainVideo.tsx` | TransitionSeries wiring 5 scenes with fade transitions |
+| `remotion/src/scenes/Scene1Opening.tsx` | Logo + tagline reveal |
+| `remotion/src/scenes/Scene2Problem.tsx` | Problem stats panel |
+| `remotion/src/scenes/Scene3Pillars.tsx` | Three module cards |
+| `remotion/src/scenes/Scene4Features.tsx` | Feature list animation |
+| `remotion/src/scenes/Scene5Closing.tsx` | Final branding |
+| `remotion/scripts/render-remotion.mjs` | Programmatic render script |
 
-This surfaces the two most-used authenticated features (deliveries, household) as top-level tabs instead of burying them under "Services" and "Home > pill".
-
-### 3. Touch target audit
-
-Ensure all interactive elements in the citizen portal meet the 44x44px minimum:
-- Bottom nav buttons: already 44px min (good)
-- Service grid buttons: add `min-h-[48px]`
-- Sub-nav pill buttons: increase from 36px to 44px height
-- Card action buttons: ensure `size="default"` not `size="sm"` for primary actions
-
-### 4. Keyboard-aware form behavior
-
-Add a CSS utility for forms to handle the virtual keyboard pushing content up. Use `dvh` (dynamic viewport height) units where available, and ensure the bottom nav hides when an input is focused on mobile.
-
-## Technical Changes
-
-| File | Change |
-|------|--------|
-| `src/components/ui/dialog.tsx` | Make DialogContent full-screen below `sm:` breakpoint |
-| `src/components/citizen/CitizenBottomNav.tsx` | Change sections to home/search/deliveries/household/more |
-| `src/pages/CitizenPortalUnified.tsx` | Restructure sections to match new nav; add "More" overflow section |
-| `src/index.css` | Add `.keyboard-aware` utility class for form views |
-
-## What this does NOT change
-- Admin/operator layouts (sidebar, dense tables, analytics) — these are desktop/tablet tools
-- Business logic or database schema
-- Existing component APIs (AddressRequestForm, etc.)
+Output: `/mnt/documents/coneg-promo.mp4`
