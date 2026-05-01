@@ -35,6 +35,7 @@ import { HouseholdManagement } from "@/components/HouseholdManagement";
 import CitizenDeliveriesView from "@/components/citizen/CitizenDeliveriesView";
 import { PickupRequestForm, DeliveryPreferencesForm } from "@/components/postal";
 import { MapErrorBoundary } from "@/components/ErrorBoundary";
+import { CitizenBusinessesTab } from "@/components/citizen/CitizenBusinessesTab";
 
 interface SearchResult {
   uac: string;
