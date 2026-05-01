@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   MapPin, Search, FileText, Clock, LogOut, Phone, FileCheck,
   AlertCircle, User, Home, Settings, Users, Bell, Package, Truck,
-  ArrowRight, Info, Plus
+  ArrowRight, Info, Plus, Building2
 } from "lucide-react";
 
 // Hooks and Components
