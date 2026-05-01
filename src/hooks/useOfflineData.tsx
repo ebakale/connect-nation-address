@@ -256,7 +256,7 @@ export const useOfflineIncidents = () => {
         try {
           setSyncProgress(prev => ({ ...prev, current: i + 1 }));
 
-          const { error: insertError } = await supabase
+          const { error: insertError } = await (supabase as any)
             .from('incidents')
             .insert({
               reported_by: user?.id,
