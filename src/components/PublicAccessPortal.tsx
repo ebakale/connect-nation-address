@@ -76,7 +76,7 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
   const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
   const { trackSearch } = useSearchAnalytics();
-  const { location, getCurrentPosition } = useEnhancedGeolocation({
+  const { location } = useEnhancedGeolocation({
     enableHighAccuracy: true,
     enableCaching: true
   });
