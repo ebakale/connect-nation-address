@@ -100,11 +100,6 @@ export function PublicAccessPortal({ onNavigateToEmergency }: PublicAccessPortal
     };
   }, []);
 
-  // Initialize location on component mount
-  useEffect(() => {
-    getCurrentPosition(true); // Use cached if available
-  }, []);
-
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       toast({
