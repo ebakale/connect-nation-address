@@ -69,34 +69,46 @@ export const useEnhancedGeolocation = (options: LocationOptions = {}) => {
   // Request permissions
   const requestPermissions = async (): Promise<boolean> => {
     try {
-      let permissionGranted = false;
-
       if (Capacitor.isNativePlatform()) {
         const permission = await Geolocation.requestPermissions();
-        permissionGranted = permission.location === 'granted';
-      } else {
-        // Web platform
-        if ('permissions' in navigator) {
+        if (permission.location !== 'granted') {
+          setError('Location permission denied');
+          toast.error('Location access is required for this feature');
+          return false;
+        }
+        return true;
+      }
+
+      // Web platform
+      if (!('geolocation' in navigator)) {
+        setError('Geolocation is not supported by this browser');
+        toast.error('Geolocation is not supported by this browser');
+        return false;
+      }
+
+      if ('permissions' in navigator) {
+        try {
           const permission = await navigator.permissions.query({ name: 'geolocation' });
-          permissionGranted = permission.state === 'granted';
-        } else {
-          // Fallback for older browsers
-          permissionGranted = 'geolocation' in navigator;
+          // 'prompt' means the browser will ask when we call getCurrentPosition,
+          // so only an explicit 'denied' should block us here.
+          if (permission.state === 'denied') {
+            setError('Location permission denied');
+            toast.error('Location access is blocked. Enable it in your browser site settings.');
+            return false;
+          }
+        } catch {
+          // Permissions API unavailable for geolocation — fall through and prompt.
         }
       }
 
-      if (!permissionGranted) {
-        setError('Location permission denied');
-        toast.error('Location access is required for this feature');
-      }
-
-      return permissionGranted;
+      return true;
     } catch (error) {
       console.error('Permission request failed:', error);
       setError('Failed to request location permission');
       return false;
     }
   };
+
 
   // Get current position with enhanced features
   const getCurrentPosition = useCallback(async (useCache: boolean = true): Promise<EnhancedLocationData | null> => {
