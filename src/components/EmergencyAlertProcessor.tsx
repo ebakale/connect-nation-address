@@ -41,7 +41,7 @@ const QUICK_TYPES = [
 ];
 
 const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlertProcessorProps) => {
-  const { t } = useTranslation(['emergency', 'common']);
+  const { t, i18n } = useTranslation(['emergency', 'common']);
   const { user } = useAuth();
   const { latitude, longitude, loading: geoLoading, error: geoError, getCurrentPosition } = useGeolocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +64,7 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
         body: {
           ...alertData,
           reporterId: user?.id,
-          language: 'en'
+          language: i18n.language
         }
       });
       if (error) throw error;
