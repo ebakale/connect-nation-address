@@ -38,6 +38,7 @@ import { PDFErrorBoundary } from '@/components/ErrorBoundary';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [emergencyPrefilledData, setEmergencyPrefilledData] = useState<any>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, loading } = useAuth();
   const { t, i18n } = useTranslation(['common','address','emergency']);
   const navigate = useNavigate();
