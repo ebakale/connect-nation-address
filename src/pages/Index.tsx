@@ -983,28 +983,37 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Mobile Navigation */}
-      <nav className="xl:hidden border-b bg-card/95 backdrop-blur-md sticky top-[53px] z-40 overflow-x-auto scrollbar-none">
-        <div className="flex items-center gap-1 px-4 py-1.5 min-w-max">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.id}
-                onClick={() => item.route ? navigate(item.route) : handleSectionChange(item.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                  activeSection === item.id
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Icon className="h-3.5 w-3.5" />
-                {translateKey(item.labelKey, getFallbackLabel(item.id))}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
+      {/* Mobile Navigation (sheet menu — avoids horizontal overflow) */}
+      <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+        <SheetContent side="right" className="w-[80vw] max-w-xs p-0">
+          <SheetHeader className="px-4 py-3 border-b text-left">
+            <SheetTitle className="text-base">{t('common:platform.conEGPlatform')}</SheetTitle>
+          </SheetHeader>
+          <nav className="flex flex-col p-2">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setMobileNavOpen(false);
+                    item.route ? navigate(item.route) : handleSectionChange(item.id);
+                  }}
+                  className={`flex items-center gap-3 px-3 min-h-[44px] rounded-md text-sm font-medium text-left transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-foreground hover:bg-muted'
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{translateKey(item.labelKey, getFallbackLabel(item.id))}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </SheetContent>
+      </Sheet>
+
 
       {/* Breadcrumb */}
       {activeSection !== 'overview' && (
