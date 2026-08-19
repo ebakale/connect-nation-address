@@ -99,7 +99,7 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
         contactInfo: formData.contactInfo || undefined
       };
       await processEmergencyAlert(alertData);
-      toast.success(t('emergency:success.alertSent'));
+      toast.success(t('emergency:emergencyAlertSent'));
       setFormData({ emergencyType: '', message: '', contactInfo: '' });
       if (onSuccess) {
         setTimeout(() => onSuccess(), 1500);
