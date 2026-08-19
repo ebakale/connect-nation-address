@@ -41,7 +41,7 @@ const QUICK_TYPES = [
 ];
 
 const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlertProcessorProps) => {
-  const { t } = useTranslation(['emergency', 'common']);
+  const { t, i18n } = useTranslation(['emergency', 'common']);
   const { user } = useAuth();
   const { latitude, longitude, loading: geoLoading, error: geoError, getCurrentPosition } = useGeolocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +64,7 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
         body: {
           ...alertData,
           reporterId: user?.id,
-          language: 'en'
+          language: i18n.language
         }
       });
       if (error) throw error;
@@ -99,7 +99,7 @@ const EmergencyAlertProcessor = ({ onSuccess, prefilledAddress }: EmergencyAlert
         contactInfo: formData.contactInfo || undefined
       };
       await processEmergencyAlert(alertData);
-      toast.success(t('emergency:success.alertSent'));
+      toast.success(t('emergency:emergencyAlertSent'));
       setFormData({ emergencyType: '', message: '', contactInfo: '' });
       if (onSuccess) {
         setTimeout(() => onSuccess(), 1500);
