@@ -1,0 +1,1 @@
+DELETE FROM public.emergency_incidents WHERE id = 'e89b93b7-50c3-4c46-923a-d42b9d583337';
