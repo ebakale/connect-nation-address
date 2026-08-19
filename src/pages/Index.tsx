@@ -44,6 +44,32 @@ const Index = () => {
   const navigate = useNavigate();
   const { isPoliceRole } = useUserRole();
 
+  // Lock background scrolling (incl. iOS Safari) while the mobile menu is open
+  useEffect(() => {
+    if (!mobileNavOpen) return;
+    const scrollY = window.scrollY;
+    const { body } = document;
+    const prev = {
+      position: body.style.position,
+      top: body.style.top,
+      width: body.style.width,
+      overflow: body.style.overflow,
+    };
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    return () => {
+      body.style.position = prev.position;
+      body.style.top = prev.top;
+      body.style.width = prev.width;
+      body.style.overflow = prev.overflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [mobileNavOpen]);
+
+
+
   // All hooks must be called before any conditional returns
   const translateKey = (key: string, fallback?: string) => {
     const translated = t(key);
