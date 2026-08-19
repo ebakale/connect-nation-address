@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck, Target, Eye, Building, QrCode, Ambulance, Mail, LayoutDashboard, Clock, ArrowRight, Fingerprint, AlertTriangle, Info, Phone, Loader2 } from 'lucide-react';
+import { MapPin, Shield, Users, Search, FileText, HelpCircle, Book, LogIn, CheckCircle, Globe, BarChart3, Package, Truck, Target, Eye, Building, QrCode, Ambulance, Mail, LayoutDashboard, Clock, ArrowRight, Fingerprint, AlertTriangle, Info, Phone, Loader2, Menu } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 // PDF generators are lazy-loaded — they pull in jspdf + html2canvas (~1MB) and are
 // only needed when the user navigates to the Help/Documentation section.
