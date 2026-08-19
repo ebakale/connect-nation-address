@@ -980,6 +980,15 @@ const Index = () => {
                   <span className="hidden sm:inline">{t('common:auth.signIn')}</span>
                 </Button>
               )}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="xl:hidden h-9 w-9"
+                onClick={() => setMobileNavOpen(true)}
+                aria-label={t('common:navigation.menu', { defaultValue: 'Menu' })}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
             </div>
           </div>
         </div>
