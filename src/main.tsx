@@ -3,6 +3,11 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import { initCapacitorBridge } from './lib/capacitorBridge'
+
+// Wait for the native Capacitor bridge (no-op on web) before any bridge calls
+void initCapacitorBridge()
+
 
 // Register service worker in production only
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
